@@ -1,5 +1,5 @@
 import { Card, CardContent } from "@/components/ui/card"; // Ajuste os imports conforme seu projeto
-import ProjetoGuri from "@/assets/logo-projeto-guri.webp";
+import ProjetoGuri from "@/assets/logo-guri.jpg";
 import AABB from "@/assets/logo-aabb.webp";
 import Prefeitura from "@/assets/logo-prefeitura.webp";
 import Governo from "@/assets/logo-governo-estadual-federal.webp";
@@ -29,11 +29,11 @@ const Parceiros = () => {
                             <div className="h-24 flex items-center justify-center mb-4">
                                 <img
                                     src={ProjetoGuri} // Certifique-se que o caminho está correto
-                                    alt="Logo Projeto Guri"
+                                    alt="Logo Guri"
                                     className="h-full w-auto object-contain mx-auto"
                                 />
                             </div>
-                            <h3 className="font-bold text-lg mb-2">Projeto Guri</h3>
+                            <h3 className="font-bold text-lg mb-2">Guri</h3>
                             <p className="text-sm text-muted-foreground">
                                 Parceria para desenvolvimento artístico e cultural através de aulas de canto e instrumentos.
                             </p>

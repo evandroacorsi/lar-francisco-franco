@@ -7,6 +7,21 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Loader2, X, Plus, Upload, Image as ImageIcon } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Check, ChevronsUpDown } from "lucide-react";
+import { cn } from "@/lib/utils"; // ou onde estiver sua função cn
 
 interface NewsDialogProps {
   open: boolean;
@@ -33,6 +48,51 @@ export function NewsDialog({ open, onOpenChange, editingNews, onSuccess }: NewsD
   const fileInputRef = useRef<HTMLInputElement>(null); // Referência para o input file oculto
   const { toast } = useToast();
 
+  const MAX_CONTEUDO_LENGTH = 6000;
+  const CONTEUDO_BLOCO = 2000;
+
+  const CATEGORIAS_PREDEFINIDAS = [
+    "Eventos",
+    "Campanhas",
+    "Atividades",
+    "Prestação de Contas",
+    "Esportes",
+    "Meio Ambiente",
+    "Informativo",
+    "Doações",
+    "Transparência",
+    "Depoimentos",
+    "Parcerias",
+    "Cuidados e Saúde",
+    "Oficinas",
+    "Projetos",
+    "Cultura",
+    "Lazer",
+    "Avisos",
+  ].sort((a, b) =>
+    a.localeCompare(b)
+  );
+
+
+  function dividirConteudo(texto: string) {
+    return {
+      conteudo: texto.slice(0, CONTEUDO_BLOCO),
+      conteudo2: texto.slice(CONTEUDO_BLOCO, CONTEUDO_BLOCO * 2) || "",
+      conteudo3: texto.slice(CONTEUDO_BLOCO * 2) || "",
+    };
+  }
+
+  function juntarConteudos(news: any) {
+    return [
+      news?.conteudo,
+      news?.conteudo2,
+      news?.conteudo3,
+    ]
+      .filter(Boolean)
+      .join("");
+  }
+
+
   useEffect(() => {
     if (open) {
       if (editingNews) {
@@ -56,7 +116,7 @@ export function NewsDialog({ open, onOpenChange, editingNews, onSuccess }: NewsD
           data: editingNews.data ? editingNews.data.split("T")[0] : new Date().toISOString().split("T")[0],
           titulo: editingNews.titulo || "",
           descricao: editingNews.descricao || "",
-          conteudo: editingNews.conteudo || "",
+          conteudo: juntarConteudos(editingNews),
           categoria: Array.isArray(editingNews.categoria) ? editingNews.categoria : [],
           imagem: imagensTratadas,
         });
@@ -73,19 +133,15 @@ export function NewsDialog({ open, onOpenChange, editingNews, onSuccess }: NewsD
     }
   }, [editingNews, open]);
 
-  const handleAddCategory = () => {
-    if (categoryInput.trim()) {
-      setFormData(prev => ({ ...prev, categoria: [...prev.categoria, categoryInput.trim()] }));
-      setCategoryInput("");
-    }
-  };
-
-  const handleRemoveCategory = (cat: string) => {
+  const toggleCategoria = (categoria: string) => {
     setFormData(prev => ({
       ...prev,
-      categoria: prev.categoria.filter((c) => c !== cat),
+      categoria: prev.categoria.includes(categoria)
+        ? prev.categoria.filter(c => c !== categoria)
+        : [...prev.categoria, categoria],
     }));
   };
+
 
   // --- Lógica Antiga de URL (Drive/Link direto) ---
   const handleAddImageURL = () => {
@@ -173,6 +229,20 @@ export function NewsDialog({ open, onOpenChange, editingNews, onSuccess }: NewsD
     e.preventDefault();
     setLoading(true);
 
+    // Validação de tamanho
+    if (formData.conteudo.length > MAX_CONTEUDO_LENGTH) {
+      toast({
+        title: "Conteúdo muito grande",
+        description: `O texto ultrapassa o limite de ${MAX_CONTEUDO_LENGTH} caracteres.`,
+        variant: "destructive",
+      });
+      setLoading(false);
+      return;
+    }
+
+    // 🔹 Divide o conteúdo em 3 partes
+    const { conteudo, conteudo2, conteudo3 } = dividirConteudo(formData.conteudo);
+
     try {
       const endpoint = editingNews
         ? "/api/news-update.php"
@@ -183,6 +253,9 @@ export function NewsDialog({ open, onOpenChange, editingNews, onSuccess }: NewsD
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           ...formData,
+          conteudo,
+          conteudo2,
+          conteudo3,
           id: editingNews?.id,
         }),
       });
@@ -213,6 +286,7 @@ export function NewsDialog({ open, onOpenChange, editingNews, onSuccess }: NewsD
     }
   };
 
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto sm:max-w-[600px]">
@@ -224,20 +298,20 @@ export function NewsDialog({ open, onOpenChange, editingNews, onSuccess }: NewsD
 
         <form onSubmit={handleSubmit} className="space-y-6 py-4">
 
-          {/* Data e Título */}
-          <div className="grid gap-4 md:grid-cols-4">
-            <div className="md:col-span-1 space-y-2">
+          <div className="grid gap-4 md:grid-cols-7">
+            <div className="md:col-span-2 space-y-2"> {/* Aumentado de 1 para 2 */}
               <Label>Data</Label>
               <Input
+                className="bg-white appearance-none" // appearance-none ajuda em alguns browsers
                 type="date"
                 value={formData.data}
                 onChange={(e) => setFormData({ ...formData, data: e.target.value })}
                 required
               />
             </div>
-            <div className="md:col-span-3 space-y-2">
+            <div className="md:col-span-5 space-y-2">
               <Label>Título</Label>
-              <Input
+              <Input className="bg-white"
                 placeholder="Título da manchete"
                 value={formData.titulo}
                 onChange={(e) => setFormData({ ...formData, titulo: e.target.value })}
@@ -249,7 +323,7 @@ export function NewsDialog({ open, onOpenChange, editingNews, onSuccess }: NewsD
           {/* Descrição Curta */}
           <div className="space-y-2">
             <Label>Descrição Curta (Resumo)</Label>
-            <Textarea
+            <Textarea className="bg-white"
               placeholder="Aparece no card da listagem..."
               value={formData.descricao}
               onChange={(e) => setFormData({ ...formData, descricao: e.target.value })}
@@ -258,42 +332,100 @@ export function NewsDialog({ open, onOpenChange, editingNews, onSuccess }: NewsD
             />
           </div>
 
-          {/* Conteúdo Completo */}
           <div className="space-y-2">
-            <Label>Conteúdo Completo</Label>
+            <Label>
+              Conteúdo Completo
+              <span className="ml-2 text-xs text-muted-foreground">
+                ({formData.conteudo.length}/{MAX_CONTEUDO_LENGTH})
+              </span>
+            </Label>
+
             <Textarea
+              className="bg-white"
               placeholder="Texto completo da notícia..."
               value={formData.conteudo}
-              onChange={(e) => setFormData({ ...formData, conteudo: e.target.value })}
-              rows={5}
+              onChange={(e) => {
+                const value = e.target.value;
+
+                if (value.length <= MAX_CONTEUDO_LENGTH) {
+                  setFormData({ ...formData, conteudo: value });
+                }
+              }}
+              rows={8}
             />
+
+            {formData.conteudo.length >= MAX_CONTEUDO_LENGTH && (
+              <p className="text-xs text-destructive">
+                Limite máximo de {MAX_CONTEUDO_LENGTH} caracteres atingido.
+              </p>
+            )}
           </div>
 
-          {/* Categorias */}
+
+          {/* Componente de Multi-Select para Categorias */}
           <div className="space-y-2">
             <Label>Categorias</Label>
-            <div className="flex gap-2">
-              <Input
-                value={categoryInput}
-                onChange={(e) => setCategoryInput(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), handleAddCategory())}
-                placeholder="Ex: Eventos, Doações..."
-              />
-              <Button type="button" onClick={handleAddCategory} size="icon" variant="secondary">
-                <Plus className="h-4 w-4" />
-              </Button>
-            </div>
-            <div className="flex flex-wrap gap-2 mt-2 min-h-[30px]">
-              {formData.categoria.map((cat, idx) => (
-                <Badge key={`${cat}-${idx}`} variant="secondary" className="gap-1 pl-2 pr-1 py-1">
-                  {cat}
-                  <X
-                    className="h-3 w-3 cursor-pointer hover:text-destructive transition-colors"
-                    onClick={() => handleRemoveCategory(cat)}
-                  />
-                </Badge>
-              ))}
-            </div>
+
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  role="combobox"
+                  className="w-full justify-between h-auto min-h-[40px]"
+                >
+                  {formData.categoria.length > 0
+                    ? `${formData.categoria.length} selecionada(s)`
+                    : "Selecione as categorias..."}
+                  <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                </Button>
+              </PopoverTrigger>
+
+              <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0" align="start">
+                <Command>
+                  <CommandInput placeholder="Buscar categoria..." />
+                  <CommandList>
+                    <CommandEmpty>Nenhuma categoria encontrada.</CommandEmpty>
+                    <CommandGroup>
+                      {[...CATEGORIAS_PREDEFINIDAS]
+                        .sort((a, b) => a.localeCompare(b))
+                        .map((cat) => (
+                          <CommandItem
+                            key={cat}
+                            value={cat}
+                            onSelect={() => toggleCategoria(cat)}
+                          >
+                            <Check
+                              className={cn(
+                                "mr-2 h-4 w-4",
+                                formData.categoria.includes(cat)
+                                  ? "opacity-100"
+                                  : "opacity-0"
+                              )}
+                            />
+                            {cat}
+                          </CommandItem>
+                        ))}
+                    </CommandGroup>
+                  </CommandList>
+                </Command>
+              </PopoverContent>
+            </Popover>
+
+            {/* Exibição das Tags Selecionadas (fora do dropdown para fácil visualização/remoção) */}
+            {formData.categoria.length > 0 && (
+              <div className="flex flex-wrap gap-2 mt-3 border rounded-md p-2 bg-muted/20">
+                {formData.categoria.map((cat) => (
+                  <Badge
+                    key={cat}
+                    variant="secondary"
+                    className="cursor-pointer hover:bg-destructive hover:text-destructive-foreground transition-colors"
+                    onClick={() => toggleCategoria(cat)} // Clique no badge para remover
+                  >
+                    {cat} ✕
+                  </Badge>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Imagens (Upload + URL) */}
@@ -307,7 +439,7 @@ export function NewsDialog({ open, onOpenChange, editingNews, onSuccess }: NewsD
                 onChange={(e) => setImageInput(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), handleAddImageURL())}
                 placeholder="Cole um link ou use o botão de upload ->"
-                className="flex-1"
+                className="flex-1 bg-white"
               />
 
               {/* Botão Adicionar URL */}

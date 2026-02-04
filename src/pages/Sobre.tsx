@@ -14,52 +14,55 @@ import i5 from "@/assets/5.png";
 import i6 from "@/assets/6.png";
 
 import amanda from "@/assets/time/amanda.jpeg";
-import bruna from "@/assets/time/bruna.jpeg";
+import bruna from "@/assets/time/bruna.jpg";
 import carol from "@/assets/time/carol.jpeg";
-import evelin from "@/assets/time/evelin.jpeg";
 import gilberto from "@/assets/time/gilberto.jpeg";
 import joao from "@/assets/time/joao.jpeg";
 import luiz from "@/assets/time/luiz.jpeg";
 import michele from "@/assets/time/michele.jpeg";
 import soraya from "@/assets/time/soraya.jpeg";
+import sandra from "@/assets/time/sandra.jpg";
 import tamara from "@/assets/time/tamara.jpeg";
 import taina from "@/assets/time/taina.jpeg";
 import vanderleia from "@/assets/time/vanderleia.jpeg";
-
+import user from "@/assets/time/user.jpg";
 
 const Sobre = () => {
   // Dados da Equipe (Mantidos conforme original, atualize se necessário)
   // Dados da Equipe Atualizados
   const teamMembers = [
     // Coordenação e Administração
-    { name: "Sandra Barreto da Mota Gomes", role: "Coordenadora Administrativa", image: "https://i.pravatar.cc/150?img=12" },
-    { name: "Soraya El Gharib Jorge Estêvão", role: "Coordenadora Pedagógica", image: soraya },
+    { name: "Sandra Barreto da Mota Gomes", role: "Coordenadora Geral", image: sandra },
+    { name: "Soraya El Gharib Jorge Estevam", role: "Coordenadora Pedagógica", image: soraya },
     { name: "Michele Cristina Lima", role: "Secretária", image: michele },
+    { name: "Maicon Sardinha", role: "Contador - Prisma Contabilidade", image: user },
 
     // Equipe Técnica
     { name: "Bruna de Lira Silva", role: "Assistente Social", image: bruna },
 
     // Educadores
     { name: "Carolina da Silva Souza", role: "Educadora Social", image: carol },
-    { name: "Taina", role: "Educadora Social", image: taina },
-    { name: "Luiz Silva Santos", role: "Educador Social", image: luiz },
-    { name: "João Pedro", role: "Educador Social", image: joao },
+    { name: "Tainá Cristina da Silva Grilo de Moura", role: "Educadora Social", image: user },
+    { name: "Luiz Felipe Santos Silva", role: "Educador Social", image: luiz },
+    { name: "João Pedro de Oliveira Zafalon", role: "Educador Social", image: joao },
     { name: "Tamara Pascoal Barreto", role: "Educadora Social", image: tamara },
-    { name: "Amanda Carolina", role: "Educadora Social", image: amanda },
-    { name: "Alexandre (Xande)", role: "Professor de Capoeira", image: "https://i.pravatar.cc/150?img=13" },
+    { name: "Amanda Carolina Cavalcante Leite", role: "Educadora Social", image: amanda },
+    { name: "Alexandre Félix", role: "Professor de Capoeira", image: user },
 
     // Apoio
-    { name: "Vanderleia Roza da Silva de Abreu", role: "Servente", image: vanderleia },
-    { name: "Gilberto Milan", role: "Servente", image: gilberto },
+    { name: "Vanderleia Roza da Silva de Abreu", role: "Serviços Gerais", image: vanderleia },
+    { name: "Cristina Santos Soares Padilha", role: "Serviços Gerais", image: user },
+    { name: "Gilberto Milani", role: "Zelador", image: gilberto },
   ];
 
   // Dados da Rotina
   const routineItems = [
-    { time: "7h00", activity: "Início da busca de crianças nos pontos de ônibus estratégicos" },
-    { time: "8h00", activity: "Chegada das crianças e início das atividades" },
-    { time: "10h00", activity: "Pausa para lanche da manhã (frutas)" },
-    { time: "12h00", activity: "Almoço e troca de turno (saída manhã / entrada tarde)" },
-    { time: "13h00", activity: "Início das atividades do período da tarde" },
+    { time: "07h", activity: "Início da busca de crianças nos pontos de ônibus estratégicos e café da manhã" },
+    { time: "08h", activity: "Início das atividades" },
+    { time: "10h", activity: "Pausa para lanche da manhã (frutas)" },
+    { time: "11h", activity: "Almoço para a turma da manhã" },
+    { time: "12h", activity: "Troca de turno e almoço da turma da tarde" },
+    { time: "13h", activity: "Início das atividades do período da tarde" },
     { time: "15h30", activity: "Pausa para o lanche da tarde" },
     { time: "16h30", activity: "Início da despedida e transporte para casa" },
   ];
@@ -95,7 +98,7 @@ const Sobre = () => {
                     Fundado oficialmente em <strong>03 de outubro de 1960</strong>, a instituição funcionou inicialmente em regime de internato. Porém, acompanhando as mudanças sociais e legais, em 1993 readequou seu estatuto para atender a realidade local.
                   </p>
                   <p className="text-justify">
-                    Hoje, atuamos como <strong>Serviço de Convivência e Fortalecimento de Vínculos</strong>. Através de parcerias com a Prefeitura, FENABB (AABB Comunidade) e Projeto Guri, atendemos cerca de 300 crianças e adolescentes, oferecendo oficinas, esporte, cultura e cidadania no contraturno escolar.
+                    Hoje, atuamos como <strong>Serviço de Convivência e Fortalecimento de Vínculos</strong>. Através de parcerias com a Prefeitura, FENABB (AABB Comunidade) e Guri, atendemos cerca de 300 crianças e adolescentes, oferecendo oficinas, esporte, cultura e cidadania no contraturno escolar.
                   </p>
                 </div>
               </div>
@@ -227,11 +230,12 @@ const Sobre = () => {
                 image={i1}
               />
               <ProgramCard
-                icon={BookOpen}
-                title="Apoio Pedagógico"
-                description="Oficinas didático-lúdicas que auxiliam no desenvolvimento cognitivo e escolar."
+                icon={Users}
+                title="Participação Social"
+                description="Ações que incentivam a participação, o protagonismo e a interação social das crianças e adolescentes no convívio coletivo."
                 image={i2}
               />
+
               <ProgramCard
                 icon={Brain}
                 title="Apoio Psicossocial"
@@ -241,7 +245,7 @@ const Sobre = () => {
               <ProgramCard
                 icon={Music}
                 title="Cultura e Arte"
-                description="Parceria com o Projeto Guri e oficinas de música, dança e capoeira para estimular a criatividade."
+                description="Parceria com o Guri e oficinas de música, dança e capoeira para estimular a criatividade."
                 image={i4}
               />
               <ProgramCard
@@ -278,7 +282,7 @@ const Sobre = () => {
                 <div className="bg-gray-50 p-6 rounded-xl border border-gray-100 hover:shadow-lg transition-all text-center">
                   <Sparkles className="text-secondary mb-4 mx-auto" size={40} />
                   <h3 className="text-xl font-bold mb-2 text-primary">Parcerias Fortes</h3>
-                  <p className="text-sm text-muted-foreground">Programa AABB Integração Comunidade (FENABB) e Projeto Guri (Sustenidos).</p>
+                  <p className="text-sm text-muted-foreground">Programa AABB Integração Comunidade (FENABB) e Guri.</p>
                 </div>
                 <div className="bg-gray-50 p-6 rounded-xl border border-gray-100 hover:shadow-lg transition-all text-center">
                   <Users className="text-secondary mb-4 mx-auto" size={40} />

@@ -94,7 +94,7 @@ const Index = () => {
             </Card>
             <Card className="text-center shadow-card hover:shadow-hover transition-smooth bg-white">
               <CardContent className="p-8">
-                <div className="text-4xl font-bold text-primary mb-2">10000+</div>
+                <div className="text-4xl font-bold text-primary mb-2">20000+</div>
                 <p className="text-muted-foreground">Vidas Transformadas</p>
               </CardContent>
             </Card>
@@ -132,10 +132,12 @@ const Index = () => {
                 <Eye className="text-primary mb-4" size={48} />
                 <h3 className="text-2xl font-bold text-primary mb-4">Visão</h3>
                 <p className="text-muted-foreground leading-relaxed">
-                  Ser referência em atendimento socioeducativo, reconhecida pela excelência
-                  no atendimento e pelo compromisso com o desenvolvimento social das crianças e
-                  adolescentes atendidos, em parceria com a rede de Assistência Social.
+                  Ser referência na oferta do Serviço de Convivência e Fortalecimento de Vínculos,
+                  reconhecida pela qualidade do atendimento socioassistencial e pelo compromisso
+                  com a proteção social de crianças e adolescentes em situação de vulnerabilidade social,
+                  em articulação com a rede de Assistência Social.
                 </p>
+
               </CardContent>
             </Card>
 
@@ -194,11 +196,12 @@ const Index = () => {
               image={i1}
             />
             <ProgramCard
-              icon={BookOpen}
-              title="Apoio Pedagógico"
-              description="Auxílio nas atividades escolares e oficinas lúdicas em parceria com a rede de ensino."
+              icon={Users}
+              title="Participação Social"
+              description="Ações que incentivam a participação, o protagonismo e a interação social das crianças e adolescentes no convívio coletivo."
               image={i2}
             />
+
             <ProgramCard
               icon={Brain}
               title="Apoio Psicossocial"
@@ -363,40 +366,54 @@ const Index = () => {
           ) : recentNews.length > 0 ? (
             // Notícias Reais
             <div className="grid md:grid-cols-3 gap-8">
-              {recentNews.map((item) => (
-                <Link to={`/noticia/${item.id}`} key={item.id} className="block group">
-                  <Card className="overflow-hidden shadow-card hover:shadow-hover transition-smooth h-full flex flex-col bg-white">
-                    {/* Imagem ou Placeholder */}
-                    <div className="h-48 w-full overflow-hidden bg-gray-100 relative">
+              {recentNews.map((item, index) => (
+                <Link
+                  to={`/noticia/${item.id}`}
+                  key={item.id}
+                  className="block group"
+                  style={{
+                    animation: `slideUp 0.5s ease-out forwards ${index * 0.2}s`,
+                    opacity: 0
+                  }}
+                >
+                  <Card className="relative overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-500 border-none group-hover:-translate-y-2 bg-white">
+                    <div className="h-48 w-full overflow-hidden relative">
+                      {/* Badge flutuante na imagem */}
+                      <div className="absolute top-4 left-4 z-10">
+                        <span className="bg-primary/90 text-white text-[10px] px-2 py-1 rounded shadow-lg backdrop-blur-sm">
+                          Novidade
+                        </span>
+                      </div>
+
                       {item.imagem ? (
                         <img
                           src={item.imagem}
                           alt={item.titulo}
-                          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                         />
                       ) : (
-                        <div className="w-full h-full flex items-center justify-center text-gray-300">
-                          <ImageOff size={48} />
+                        <div className="w-full h-full flex items-center justify-center bg-muted">
+                          <ImageOff size={48} className="text-muted-foreground/30" />
                         </div>
                       )}
+                      {/* Overlay gradiente na imagem */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                     </div>
 
-                    <CardContent className="p-6 flex-1 flex flex-col">
-                      <div className="flex items-center gap-2 text-sm text-muted-foreground mb-3">
-                        <Calendar size={16} className="text-primary" />
-                        <span>{formatDate(item.data)}</span>
+                    <CardContent className="p-6">
+                      <div className="flex items-center gap-2 text-xs font-medium text-primary mb-3">
+                        <Calendar size={14} />
+                        {formatDate(item.data)}
                       </div>
-
-                      <h3 className="font-bold text-lg mb-2 group-hover:text-primary transition-smooth line-clamp-2">
+                      <h3 className="font-bold text-xl mb-3 group-hover:text-primary leading-tight transition-colors">
                         {item.titulo}
                       </h3>
-
-                      <p className="text-sm text-muted-foreground mb-4 line-clamp-3 flex-1">
+                      <p className="text-gray-600 text-sm line-clamp-3 mb-4">
                         {item.descricao}
                       </p>
-
-                      <div className="mt-auto flex items-center text-primary font-medium text-sm">
-                        Ler mais <ArrowRight size={16} className="ml-1 group-hover:translate-x-1 transition-transform" />
+                      <div className="flex items-center text-primary font-bold text-sm">
+                        Ver notícia completa
+                        <ArrowRight size={18} className="ml-2 group-hover:translate-x-2 transition-transform" />
                       </div>
                     </CardContent>
                   </Card>

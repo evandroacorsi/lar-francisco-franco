@@ -5,6 +5,14 @@ import { Button } from "@/components/ui/button";
 import { Calendar, Eye, ArrowRight, ImageOff, Newspaper } from "lucide-react";
 import { NavLink } from "react-router-dom";
 
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
+
 // Componente de Imagem Melhorado e Robusto
 const ImageWithLoading = ({ src, alt }) => {
     const [loading, setLoading] = useState(true);
@@ -172,29 +180,42 @@ const Noticias = () => {
 
                     {/* Filtros */}
                     <div className="text-center mb-12">
-                        <div className="flex flex-col md:flex-row gap-4 justify-center">
+                        <div className="flex flex-col md:flex-row gap-4 justify-center items-center">
+                            {/* Input de Busca */}
                             <input
                                 type="text"
                                 placeholder="Buscar por título..."
-                                className="border rounded-lg px-4 py-3 w-full md:w-1/3 focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all shadow-sm"
+                                className="border rounded-lg px-4 py-3 w-full md:w-1/3 focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all shadow-sm h-[50px]"
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
                             />
-                            <select
-                                className="border rounded-lg px-4 py-3 w-full md:w-1/4 bg-white focus:ring-2 focus:ring-primary outline-none transition-all shadow-sm"
+
+                            {/* Novo Select com Scroll */}
+                            <Select
                                 value={categoriaFiltro}
-                                onChange={(e) => setCategoriaFiltro(e.target.value)}
+                                onValueChange={(value) => setCategoriaFiltro(value === "all" ? "" : value)}
                             >
-                                <option value="">Todas categorias</option>
-                                <option value="Assistência Social">Assistência Social</option>
-                                <option value="Campanhas">Campanhas</option>
-                                <option value="Eventos">Eventos</option>
-                                <option value="Prestação de Contas">Prestação de Contas</option>
-                                <option value="Meio Ambiente">Meio Ambiente</option>
-                                <option value="Saúde">Saúde</option>
-                                <option value="Lazer">Lazer</option>
-                                <option value="Atividades">Atividades</option>
-                            </select>
+                                <SelectTrigger className="w-full md:w-1/4 h-[50px] bg-white border rounded-lg px-4 shadow-sm focus:ring-2 focus:ring-primary">
+                                    <SelectValue placeholder="Todas categorias" />
+                                </SelectTrigger>
+                                <SelectContent
+                                    position="popper"
+                                    sideOffset={5}
+                                    className="max-h-[300px] w-[var(--radix-select-trigger-width)] bg-white shadow-md overflow-y-auto"
+                                >                                    <SelectItem value="all">Todas categorias</SelectItem>
+                                    {[
+                                        "Assistência Social", "Atividades", "Avisos", "Campanhas",
+                                        "Cultura", "Cuidados e Saúde", "Depoimentos", "Doações",
+                                        "Esportes", "Eventos", "Informativo", "Lazer",
+                                        "Meio Ambiente", "Oficinas", "Parcerias",
+                                        "Prestação de Contas", "Projetos", "Transparência"
+                                    ].sort().map((cat) => (
+                                        <SelectItem key={cat} value={cat}>
+                                            {cat}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
                         </div>
                     </div>
 

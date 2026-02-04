@@ -1,11 +1,50 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { FileText, Download, Shield, Users, TrendingUp, Scale, BookOpen, Info } from "lucide-react";
+import { FileText, Download, Shield, Users, TrendingUp, Scale, BookOpen, Info, Calendar, Eye, Building2 } from "lucide-react";
+const prestacaoContas = [
+  {
+    ano: "2024",
+    items: [
+      { nome: "Balanço Anual 2024", data: "Dez/2024", link: "/docs/Balanço 2024.pdf" },
+      { nome: "Relatório de Atividades", data: "Dez/2024", link: null },
+    ],
+  },
+];
+
+const documentosInstitucionais = [
+  { nome: "Estatuto Social", icon: FileText, link: "/docs/ESTATUTO ATUALIZADO 2022.pdf" },
+  { nome: "Ata de Eleição da Diretoria", icon: FileText, link: "/docs/ATA DE ELEIÇÃO E POSSE 2024 REGISTRADA.pdf" },
+  { nome: "Cartão CNPJ", icon: FileText, link: "/docs/Cartão CNPJ.pdf" },
+];
+
+
+const DocumentButton = ({ link }) => {
+  if (link) {
+    return (
+      <Button size="sm" variant="outline" className="border-primary/20 hover:bg-primary/10" asChild>
+        <a href={link} target="_blank" rel="noopener noreferrer">
+          <Eye size={16} className="mr-2 text-primary" />
+          <span className="text-primary font-medium">Visualizar</span>
+        </a>
+      </Button>
+    );
+  }
+
+  return (
+    <Button size="sm" variant="ghost" disabled className="opacity-50">
+      <Eye size={16} className="mr-2" />
+      Em breve
+    </Button>
+  );
+};
+
+/* =========================
+   COMPONENTE PRINCIPAL
+========================= */
 
 const Transparencia = () => {
   return (
     <div className="min-h-screen">
-
       <main className="pt-20">
         {/* Hero Section */}
         <section className="section-padding bg-gradient-to-br from-primary via-primary/95 to-primary/90">
@@ -25,68 +64,43 @@ const Transparencia = () => {
         <section className="section-padding bg-background pb-0">
           <div className="container-custom">
             <div className="max-w-3xl mx-auto text-center mb-16">
-              <h2 className="text-3xl font-bold text-primary mb-6">
-                Nosso Compromisso
-              </h2>
+              <h2 className="text-3xl font-bold text-primary mb-6">Nosso Compromisso</h2>
               <p className="text-muted-foreground leading-relaxed">
                 Acreditamos que a transparência é fundamental para construir e manter a confiança dos nossos
-                parceiros, doadores e da comunidade. Por isso, disponibilizamos de forma clara e acessível
-                todos os documentos e informações sobre nossa gestão.
+                parceiros, doadores e da comunidade.
               </p>
             </div>
 
             <div className="grid md:grid-cols-3 gap-8 mb-20">
-              <Card className="text-center shadow-card hover:shadow-hover transition-smooth">
-                <CardContent className="p-8">
-                  <Shield className="mx-auto mb-4 text-secondary" size={48} />
-                  <h3 className="font-bold text-lg mb-2">Certificações</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Utilidade Pública Municipal, Estadual e Federal
-                  </p>
-                </CardContent>
-              </Card>
-
-              <Card className="text-center shadow-card hover:shadow-hover transition-smooth">
-                <CardContent className="p-8">
-                  <Users className="mx-auto mb-4 text-secondary" size={48} />
-                  <h3 className="font-bold text-lg mb-2">Gestão</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Diretoria voluntária e profissionais qualificados
-                  </p>
-                </CardContent>
-              </Card>
-
-              <Card className="text-center shadow-card hover:shadow-hover transition-smooth">
-                <CardContent className="p-8">
-                  <TrendingUp className="mx-auto mb-4 text-secondary" size={48} />
-                  <h3 className="font-bold text-lg mb-2">Resultados</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Relatórios anuais com indicadores e metas
-                  </p>
-                </CardContent>
-              </Card>
+              {[
+                { icon: Shield, title: "Certificações", desc: "Utilidade Pública Municipal, Estadual e Federal" },
+                { icon: Users, title: "Gestão", desc: "Diretoria voluntária e profissionais qualificados" },
+                { icon: TrendingUp, title: "Resultados", desc: "Relatórios anuais com indicadores e metas" },
+              ].map((item, i) => (
+                <Card key={i} className="text-center shadow-card hover:shadow-hover transition-smooth">
+                  <CardContent className="p-8">
+                    <item.icon className="mx-auto mb-4 text-secondary" size={48} />
+                    <h3 className="font-bold text-lg mb-2">{item.title}</h3>
+                    <p className="text-sm text-muted-foreground">{item.desc}</p>
+                  </CardContent>
+                </Card>
+              ))}
             </div>
           </div>
         </section>
 
-        {/* --- NOVA SEÇÃO: FUNDAMENTAÇÃO LEGAL COMPLETA --- */}
+        {/* Fundamentação Legal */}
         <section className="py-16 bg-primary/5 border-y border-primary/10">
           <div className="container-custom">
             <div className="text-center mb-10">
               <div className="flex items-center justify-center gap-3 mb-4">
                 <Scale className="text-primary" size={32} />
-                <h2 className="text-2xl md:text-3xl font-bold text-primary">
-                  Fundamentação Legal
-                </h2>
+                <h2 className="text-2xl md:text-3xl font-bold text-primary">Fundamentação Legal</h2>
               </div>
               <div className="w-20 h-1 bg-secondary mx-auto mb-6 rounded-full" />
-              <p className="text-muted-foreground max-w-3xl mx-auto text-center leading-relaxed">
-                O Lar Francisco Franco atua em estrita conformidade com a legislação brasileira, garantindo a publicidade e a transparência na aplicação dos recursos públicos.
-              </p>
             </div>
 
             <div className="grid md:grid-cols-2 gap-8">
-              {/* LEI DE ACESSO À INFORMAÇÃO */}
               <Card className="bg-white border-l-4 border-l-secondary shadow-lg">
                 <CardContent className="p-8">
                   <div className="flex items-center gap-3 mb-4">
@@ -94,13 +108,12 @@ const Transparencia = () => {
                     <h3 className="text-xl font-bold text-primary">Lei de Acesso à Informação</h3>
                   </div>
                   <p className="text-sm font-bold text-gray-700 mb-2">Lei nº 12.527/2011</p>
-                  <p className="text-muted-foreground text-justify text-sm leading-relaxed mb-4">
-                    Esta lei aplica-se às entidades privadas sem fins lucrativos que recebem recursos públicos. Em cumprimento a este dispositivo, o Lar Francisco Franco torna público o acesso às informações sobre o recebimento e destinação de tais recursos.
+                  <p className="text-muted-foreground text-sm leading-relaxed">
+                    Esta lei aplica-se às entidades privadas sem fins lucrativos que recebem recursos públicos...
                   </p>
                 </CardContent>
               </Card>
 
-              {/* MROSC */}
               <Card className="bg-white border-l-4 border-l-primary shadow-lg">
                 <CardContent className="p-8">
                   <div className="flex items-center gap-3 mb-4">
@@ -108,118 +121,56 @@ const Transparencia = () => {
                     <h3 className="text-xl font-bold text-primary">Marco Regulatório (MROSC)</h3>
                   </div>
                   <p className="text-sm font-bold text-gray-700 mb-2">Lei nº 13.019/2014</p>
-                  <p className="text-muted-foreground text-justify text-sm leading-relaxed mb-4">
-                    Estabelece o regime jurídico das parcerias entre a administração pública e as organizações da sociedade civil, exigindo total transparência nas parcerias celebradas e na execução dos planos de trabalho.
+                  <p className="text-muted-foreground text-sm leading-relaxed">
+                    Estabelece o regime jurídico das parcerias entre a administração pública e as organizações da sociedade civil...
                   </p>
                 </CardContent>
               </Card>
             </div>
           </div>
         </section>
-        {/* --- FIM DA NOVA SEÇÃO --- */}
 
-        {/* Documentos */}
+        {/* Seção Dinâmica de Prestação de Contas */}
         <section className="section-padding bg-muted">
           <div className="container-custom">
             <div className="text-center mb-12">
               <h2 className="text-3xl md:text-4xl font-bold text-primary mb-4">
-                Documentos e Prestações de Contas
+                Prestações de Contas
               </h2>
               <div className="w-24 h-1 bg-secondary mx-auto rounded-full" />
             </div>
 
-            <div className="max-w-4xl mx-auto">
-              {/* 2024 */}
-              <Card className="mb-6 shadow-card">
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between mb-4">
-                    <h3 className="text-2xl font-bold text-primary">2024</h3>
+            <div className="max-w-4xl mx-auto space-y-8">
+              {prestacaoContas.map((ano) => (
+                <Card key={ano.ano} className="shadow-card overflow-hidden">
+                  <div className="bg-primary/5 px-6 py-4 border-b border-primary/10">
+                    <h3 className="text-2xl font-bold text-primary">{ano.ano}</h3>
                   </div>
-                  <div className="grid md:grid-cols-2 gap-4">
-                    <div className="flex items-center justify-between p-4 bg-background rounded-lg">
-                      <div className="flex items-center gap-3">
-                        <FileText className="text-secondary" size={24} />
-                        <span className="text-sm font-medium">Balanço Anual 2024</span>
-                      </div>
-                      <Button size="sm" variant="outline">
-                        <Download size={16} />
-                      </Button>
+                  <CardContent className="p-6">
+                    <div className="grid md:grid-cols-2 gap-4">
+                      {ano.items.map((doc, idx) => (
+                        <div key={idx} className="flex items-center justify-between p-4 bg-background rounded-xl border border-border/50 shadow-sm">
+                          <div className="flex items-center gap-3">
+                            <div className="p-2 bg-secondary/10 rounded-lg">
+                              <Calendar className="text-secondary" size={20} />
+                            </div>
+                            <div>
+                              <p className="text-sm font-bold text-gray-900">{doc.nome}</p>
+                              <p className="text-xs text-muted-foreground">{doc.data}</p>
+                            </div>
+                          </div>
+                          <DocumentButton link={doc.link} />
+                        </div>
+                      ))}
                     </div>
-                    <div className="flex items-center justify-between p-4 bg-background rounded-lg">
-                      <div className="flex items-center gap-3">
-                        <FileText className="text-secondary" size={24} />
-                        <span className="text-sm font-medium">Relatório de Atividades</span>
-                      </div>
-                      <Button size="sm" variant="outline">
-                        <Download size={16} />
-                      </Button>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* 2023 */}
-              <Card className="mb-6 shadow-card">
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between mb-4">
-                    <h3 className="text-2xl font-bold text-primary">2023</h3>
-                  </div>
-                  <div className="grid md:grid-cols-2 gap-4">
-                    <div className="flex items-center justify-between p-4 bg-background rounded-lg">
-                      <div className="flex items-center gap-3">
-                        <FileText className="text-secondary" size={24} />
-                        <span className="text-sm font-medium">Balanço Anual 2023</span>
-                      </div>
-                      <Button size="sm" variant="outline">
-                        <Download size={16} />
-                      </Button>
-                    </div>
-                    <div className="flex items-center justify-between p-4 bg-background rounded-lg">
-                      <div className="flex items-center gap-3">
-                        <FileText className="text-secondary" size={24} />
-                        <span className="text-sm font-medium">Relatório de Atividades</span>
-                      </div>
-                      <Button size="sm" variant="outline">
-                        <Download size={16} />
-                      </Button>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* 2022 */}
-              <Card className="mb-6 shadow-card">
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between mb-4">
-                    <h3 className="text-2xl font-bold text-primary">2022</h3>
-                  </div>
-                  <div className="grid md:grid-cols-2 gap-4">
-                    <div className="flex items-center justify-between p-4 bg-background rounded-lg">
-                      <div className="flex items-center gap-3">
-                        <FileText className="text-secondary" size={24} />
-                        <span className="text-sm font-medium">Balanço Anual 2022</span>
-                      </div>
-                      <Button size="sm" variant="outline">
-                        <Download size={16} />
-                      </Button>
-                    </div>
-                    <div className="flex items-center justify-between p-4 bg-background rounded-lg">
-                      <div className="flex items-center gap-3">
-                        <FileText className="text-secondary" size={24} />
-                        <span className="text-sm font-medium">Relatório de Atividades</span>
-                      </div>
-                      <Button size="sm" variant="outline">
-                        <Download size={16} />
-                      </Button>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
+                  </CardContent>
+                </Card>
+              ))}
             </div>
           </div>
         </section>
 
-        {/* Documentos Institucionais (Mantido igual) */}
+        {/* Documentos Institucionais Dinâmicos */}
         <section className="section-padding bg-background">
           <div className="container-custom">
             <div className="text-center mb-12">
@@ -229,37 +180,20 @@ const Transparencia = () => {
               <div className="w-24 h-1 bg-secondary mx-auto rounded-full" />
             </div>
 
-            <div className="max-w-3xl mx-auto grid md:grid-cols-3 gap-6">
-              <div className="flex items-center justify-between p-6 bg-muted rounded-lg shadow-card hover:shadow-hover transition-smooth">
-                <div className="flex items-center gap-4">
-                  <FileText className="text-secondary" size={32} />
-                  <span className="font-medium">Estatuto Social</span>
-                </div>
-                <Button size="sm" variant="outline">
-                  <Download size={16} />
-                </Button>
-              </div>
-
-              <div className="flex items-center justify-between p-6 bg-muted rounded-lg shadow-card hover:shadow-hover transition-smooth">
-                <div className="flex items-center gap-4">
-                  <FileText className="text-secondary" size={32} />
-                  <span className="font-medium">Ata de Eleição da Diretoria</span>
-                </div>
-                <Button size="sm" variant="outline">
-                  <Download size={16} />
-                </Button>
-              </div>
-
-              <div className="flex items-center justify-between p-6 bg-muted rounded-lg shadow-card hover:shadow-hover transition-smooth">
-                <div className="flex items-center gap-4">
-                  <FileText className="text-secondary" size={32} />
-                  <span className="font-medium">CNPJ</span>
-                </div>
-                <Button size="sm" variant="outline">
-                  <Download size={16} />
-                </Button>
-              </div>
-
+            <div className="max-w-4xl mx-auto grid md:grid-cols-3 gap-6">
+              {documentosInstitucionais.map((doc, idx) => (
+                <Card key={idx} className="shadow-card hover:shadow-hover transition-smooth bg-muted/50 border-none">
+                  <CardContent className="p-6 flex flex-col items-center text-center gap-4 bg-white">
+                    <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center shadow-sm">
+                      <doc.icon className="text-primary-foreground" size={32} />
+                    </div>
+                    <span className="font-bold text-primary min-h-[40px] flex items-center">
+                      {doc.nome}
+                    </span>
+                    <DocumentButton link={doc.link} />
+                  </CardContent>
+                </Card>
+              ))}
             </div>
           </div>
         </section>
