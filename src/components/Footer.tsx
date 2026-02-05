@@ -53,7 +53,7 @@ export const Footer = () => {
             {/* 1. Texto de Descrição no TOPO para preencher o espaço vazio */}
             <div className="pb-8 border-b border-white/10 flex align-center justify-center">
               <p className="text-lg text-primary-foreground/90 leading-relaxed max-w-2xl text-center lg:text-center mx-auto lg:mx-0 ">
-                Somos uma OSC de atendimento para crianças e adolescentes de 6 a 14 anos.
+                Somos uma OSC de atendimento para crianças e adolescentes de 6 a 15 anos.
                 Promovendo amor, cuidado, respeito e dedicação para transformar futuros.
               </p>
             </div>
@@ -66,9 +66,9 @@ export const Footer = () => {
                 <h3 className="font-bold text-lg mb-4 text-white">Navegação</h3>
                 <nav className="flex flex-col gap-3">
                   <Link to="/sobre" className="text-primary-foreground/70 hover:text-white transition-colors">Sobre Nós</Link>
-                  <Link to="/programas" className="text-primary-foreground/70 hover:text-white transition-colors">Programas</Link>
-                  <Link to="/como-ajudar" className="text-primary-foreground/70 hover:text-white transition-colors">Como Ajudar</Link>
                   <Link to="/transparencia" className="text-primary-foreground/70 hover:text-white transition-colors">Transparência</Link>
+                  <Link to="/noticias" className="text-primary-foreground/70 hover:text-white transition-colors">Noticias</Link>
+                  <Link to="/como-ajudar" className="text-primary-foreground/70 hover:text-white transition-colors">Como Ajudar</Link>
                 </nav>
               </div>
 
@@ -114,8 +114,9 @@ export const Footer = () => {
         </div>
 
         {/* Copyright */}
-        <div className="pt-8 border-t border-white/10 flex flex-col md:flex-row justify-center items-center gap-4 text-sm text-primary-foreground/40 text-center">
+        <div className="pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-primary-foreground/40 text-center">
           <p>© {currentYear} Lar Francisco Franco. Todos os direitos reservados.</p>
+          <p>Desenvolvido por <a href="https://evandroacorsi.dev"><strong>evandroacorsi.dev</strong></a></p>
         </div>
 
       </div>

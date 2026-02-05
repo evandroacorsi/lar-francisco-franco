@@ -42,7 +42,7 @@ const Sobre = () => {
 
     // Educadores
     { name: "Carolina da Silva Souza", role: "Educadora Social", image: carol },
-    { name: "Tainá Cristina da Silva Grilo de Moura", role: "Educadora Social", image: user },
+    { name: "Vitória Dos Santos Alves Camargo De Lima", role: "Educadora Social", image: user },
     { name: "Luiz Felipe Santos Silva", role: "Educador Social", image: luiz },
     { name: "João Pedro de Oliveira Zafalon", role: "Educador Social", image: joao },
     { name: "Tamara Pascoal Barreto", role: "Educadora Social", image: tamara },

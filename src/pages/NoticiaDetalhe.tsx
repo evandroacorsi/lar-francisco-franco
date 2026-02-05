@@ -89,7 +89,7 @@ const NoticiaDetalhes = () => {
             try {
                 const jaVisualizada = sessionStorage.getItem(`noticia_${id}`);
                 const res = await fetch(
-                    `https://aprovacao.larfranciscofranco.com.br/noticia.php?id=${id}${!jaVisualizada ? "&increment=true" : ""}`
+                    `https://larfranciscofranco.com.br/noticia.php?id=${id}${!jaVisualizada ? "&increment=true" : ""}`
                 );
                 const data = await res.json();
                 setNoticia(data);

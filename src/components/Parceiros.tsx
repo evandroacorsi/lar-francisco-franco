@@ -15,7 +15,7 @@ const Parceiros = () => {
                     </h2>
                     <div className="w-24 h-1 bg-secondary mx-auto mb-6 rounded-full" />
                     <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                        Trabalhamos em conjunto com diversas instituições para oferecer o melhor atendimento
+                        Trabalhamos em conjunto com diversas instituições para oferecer o <br />melhor atendimento
                     </p>
                 </div>
 
@@ -35,7 +35,7 @@ const Parceiros = () => {
                             </div>
                             <h3 className="font-bold text-lg mb-2">Guri</h3>
                             <p className="text-sm text-muted-foreground">
-                                Parceria para desenvolvimento artístico e cultural através de aulas de canto e instrumentos.
+                                Parceria para desenvolvimento artístico e cultural através de aulas de <br />canto e instrumentos.
                             </p>
                         </CardContent>
                     </Card>
@@ -71,7 +71,7 @@ const Parceiros = () => {
                             </div>
                             <h3 className="font-bold text-lg mb-2">Prefeitura de Rancharia/SP</h3>
                             <p className="text-sm text-muted-foreground">
-                                Apoio e convênios locais para transporte, holerites e mantimento da entidade.
+                                Apoio e convênios locais para transporte, holerites e <br />mantimento da entidade.
                             </p>
                         </CardContent>
                     </Card>
@@ -89,7 +89,7 @@ const Parceiros = () => {
                             </div>
                             <h3 className="font-bold text-lg mb-2">Governos Estadual e Federal</h3>
                             <p className="text-sm text-muted-foreground">
-                                Políticas públicas e recursos através de parcerias com deputados estaduais e federais.
+                                Políticas públicas e recursos através de parcerias com deputados <br />estaduais e federais.
                             </p>
                         </CardContent>
                     </Card>

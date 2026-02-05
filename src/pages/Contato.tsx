@@ -50,7 +50,7 @@ const Contato = () => {
 
     try {
       // 3. Chamada para o send-mail.php
-      const response = await fetch("https://aprovacao.larfranciscofranco.com.br/send-mail.php", {
+      const response = await fetch("https://larfranciscofranco.com.br/send-mail.php", {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: new URLSearchParams(formData as any),

@@ -42,7 +42,7 @@ const Index = () => {
     const fetchRecentNews = async () => {
       try {
         // Chamamos a API pedindo apenas 3 notícias
-        const response = await fetch("https://aprovacao.larfranciscofranco.com.br/noticias.php?limit=3");
+        const response = await fetch("https://larfranciscofranco.com.br/noticias.php?limit=3");
         const data = await response.json();
 
         // Garante que é um array
@@ -262,7 +262,7 @@ const Index = () => {
                 </div>
                 <h3 className="font-bold text-lg mb-2 text-primary">Doações Financeiras</h3>
                 <p className="text-sm text-muted-foreground mb-4">
-                  Contribua mensalmente ou com valor único
+                  Contribua mensalmente ou com <br />valor único
                 </p>
               </CardContent>
             </Card>

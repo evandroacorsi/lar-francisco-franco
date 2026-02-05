@@ -3,12 +3,19 @@ import { Button } from "@/components/ui/button";
 import { FileText, Download, Shield, Users, TrendingUp, Scale, BookOpen, Info, Calendar, Eye, Building2 } from "lucide-react";
 const prestacaoContas = [
   {
+    ano: "2025",
+    items: [
+      { nome: "Balanço Anual 2025", data: "Dez/2025", link: "/docs/Balanço 2025.pdf" },
+      { nome: "Relatório de Atividades 2025", data: "Em breve", link: null },
+    ],
+  },
+  {
     ano: "2024",
     items: [
       { nome: "Balanço Anual 2024", data: "Dez/2024", link: "/docs/Balanço 2024.pdf" },
-      { nome: "Relatório de Atividades", data: "Dez/2024", link: null },
+      { nome: "Relatório de Atividades 2024", data: "Dez/2024", link: "/docs/Relatório de Atividades 2024.pdf" },
     ],
-  },
+  }
 ];
 
 const documentosInstitucionais = [
@@ -101,31 +108,59 @@ const Transparencia = () => {
             </div>
 
             <div className="grid md:grid-cols-2 gap-8">
-              <Card className="bg-white border-l-4 border-l-secondary shadow-lg">
-                <CardContent className="p-8">
-                  <div className="flex items-center gap-3 mb-4">
-                    <Info className="text-secondary" size={28} />
-                    <h3 className="text-xl font-bold text-primary">Lei de Acesso à Informação</h3>
-                  </div>
-                  <p className="text-sm font-bold text-gray-700 mb-2">Lei nº 12.527/2011</p>
-                  <p className="text-muted-foreground text-sm leading-relaxed">
-                    Esta lei aplica-se às entidades privadas sem fins lucrativos que recebem recursos públicos...
-                  </p>
-                </CardContent>
-              </Card>
+              {/* Lei de Acesso à Informação */}
+              <a
+                href="https://www.planalto.gov.br/ccivil_03/_ato2011-2014/2011/lei/l12527.htm"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block group"
+              >
+                <Card className="bg-white border-l-4 border-l-secondary shadow-lg transition-all duration-300 group-hover:shadow-xl group-hover:-translate-y-1 h-full">
+                  <CardContent className="p-8">
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="flex items-center gap-3">
+                        <Info className="text-secondary" size={28} />
+                        <h3 className="text-xl font-bold text-primary">Lei de Acesso à Informação</h3>
+                      </div>
+                      <Eye size={20} className="text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
+                    </div>
+                    <p className="text-sm font-bold text-gray-700 mb-2">Lei nº 12.527/2011</p>
+                    <p className="text-muted-foreground text-sm leading-relaxed">
+                      Esta lei aplica-se às entidades privadas sem fins lucrativos que recebem recursos públicos para a realização de ações de interesse público.
+                    </p>
+                    <div className="mt-4 text-secondary text-xs font-bold uppercase tracking-wider flex items-center gap-1">
+                      Ler lei completa <TrendingUp size={12} />
+                    </div>
+                  </CardContent>
+                </Card>
+              </a>
 
-              <Card className="bg-white border-l-4 border-l-primary shadow-lg">
-                <CardContent className="p-8">
-                  <div className="flex items-center gap-3 mb-4">
-                    <BookOpen className="text-primary" size={28} />
-                    <h3 className="text-xl font-bold text-primary">Marco Regulatório (MROSC)</h3>
-                  </div>
-                  <p className="text-sm font-bold text-gray-700 mb-2">Lei nº 13.019/2014</p>
-                  <p className="text-muted-foreground text-sm leading-relaxed">
-                    Estabelece o regime jurídico das parcerias entre a administração pública e as organizações da sociedade civil...
-                  </p>
-                </CardContent>
-              </Card>
+              {/* Marco Regulatório (MROSC) */}
+              <a
+                href="https://www.planalto.gov.br/ccivil_03/_ato2011-2014/2014/lei/l13019.htm"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block group"
+              >
+                <Card className="bg-white border-l-4 border-l-primary shadow-lg transition-all duration-300 group-hover:shadow-xl group-hover:-translate-y-1 h-full">
+                  <CardContent className="p-8">
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="flex items-center gap-3">
+                        <BookOpen className="text-primary" size={28} />
+                        <h3 className="text-xl font-bold text-primary">Marco Regulatório (MROSC)</h3>
+                      </div>
+                      <Eye size={20} className="text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
+                    </div>
+                    <p className="text-sm font-bold text-gray-700 mb-2">Lei nº 13.019/2014</p>
+                    <p className="text-muted-foreground text-sm leading-relaxed">
+                      Estabelece o regime jurídico das parcerias entre a administração pública e as organizações da sociedade civil (OSC).
+                    </p>
+                    <div className="mt-4 text-primary text-xs font-bold uppercase tracking-wider flex items-center gap-1">
+                      Ler lei completa <TrendingUp size={12} />
+                    </div>
+                  </CardContent>
+                </Card>
+              </a>
             </div>
           </div>
         </section>
@@ -180,10 +215,10 @@ const Transparencia = () => {
               <div className="w-24 h-1 bg-secondary mx-auto rounded-full" />
             </div>
 
-            <div className="max-w-4xl mx-auto grid md:grid-cols-3 gap-6">
+            <div className="max-w-4xl mx-auto grid md:grid-cols-3 gap-6 ">
               {documentosInstitucionais.map((doc, idx) => (
                 <Card key={idx} className="shadow-card hover:shadow-hover transition-smooth bg-muted/50 border-none">
-                  <CardContent className="p-6 flex flex-col items-center text-center gap-4 bg-white">
+                  <CardContent className="p-6 flex flex-col items-center text-center gap-4 bg-white rounded-sm border-radius">
                     <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center shadow-sm">
                       <doc.icon className="text-primary-foreground" size={32} />
                     </div>
@@ -225,12 +260,15 @@ const Transparencia = () => {
             </div>
 
             {/* Outros Membros */}
-            <div className="max-w-4xl mx-auto grid md:grid-cols-2 gap-6">
+            <div className="max-w-6xl mx-auto grid md:grid-cols-3 gap-6">
               {[
-                { cargo: "Vice-Presidente", nome: "João Santos" },
-                { cargo: "Tesoureiro", nome: "Ana Costa" },
-                { cargo: "Secretária", nome: "Pedro Oliveira" },
-                { cargo: "Conselho Fiscal", nome: "Carlos Souza" },
+                { cargo: "Vice-Presidente", nome: "João Gonçalo Da Silva" },
+                { cargo: "Tesoureira", nome: " Ana Lúcia De Souza Rebelo" },
+                { cargo: "Secretária", nome: "Edi Maria Bossoni" },
+                { cargo: "Conselho Fiscal", nome: "Jussara Carmela Martins Rodrigues" },
+                { cargo: "Conselho Fiscal", nome: "Maria Aparecida Pereira Dias" },
+                { cargo: "Conselho Fiscal", nome: "Griselda Aparecida Borges" },
+
               ].map((membro, index) => (
                 <Card key={index} className="shadow-card hover:shadow-hover transition-smooth bg-white">
                   <CardContent className="p-6">
