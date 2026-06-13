@@ -158,7 +158,7 @@ const Noticias = () => {
     };
 
     return (
-        <div className="min-h-screen flex flex-col"> {/* Adicionado flex-col para footer ficar embaixo se necessário */}
+        <div className="min-h-screen flex flex-col">
 
             <main className="pt-20 flex-grow">
                 {/* Cabeçalho */}
@@ -175,7 +175,6 @@ const Noticias = () => {
                     </div>
                 </section>
 
-                {/* Container Principal do Conteúdo - CORREÇÃO DE LAYOUT E SINTAXE */}
                 <div className="container-custom px-4 pb-16">
 
                     {/* Filtros */}
@@ -255,7 +254,7 @@ const Noticias = () => {
                                                     {noticia.visualizacoes}
                                                 </div>
                                             </div>
-                                            <CardTitle className="text-xl font-bold leading-tight text-foreground line-clamp-2 min-h-[3.5rem]">
+                                            <CardTitle className="text-xl font-bold leading-tight text-foreground line-clamp-2">
                                                 {noticia.titulo}
                                             </CardTitle>
                                         </CardHeader>
@@ -276,8 +275,6 @@ const Noticias = () => {
                                                     })()}
                                                 </div>
 
-                                                {/* CORREÇÃO: Botão dentro de Link causava erro. 
-                                                    Usamos um div estilizado como botão ou passamos as classes direto pro Link */}
                                                 <NavLink to={`/noticia/${noticia.id}`} className="block w-full">
                                                     <div className="w-full inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 group border-primary text-primary hover:bg-primary/10">
                                                         Ler notícia completa
@@ -311,7 +308,7 @@ const Noticias = () => {
                             )}
                         </>
                     )}
-                </div> {/* Fechamento do container-custom (Isso faltava ou estava solto antes) */}
+                </div>
             </main>
         </div>
     );

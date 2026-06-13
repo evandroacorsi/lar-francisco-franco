@@ -6,7 +6,7 @@ const prestacaoContas = [
     ano: "2025",
     items: [
       { nome: "Balanço Anual 2025", data: "Dez/2025", link: "/docs/Balanço 2025.pdf" },
-      { nome: "Relatório de Atividades 2025", data: "Em breve", link: null },
+      { nome: "Relatório de Atividades 2025", data: "Em breve", link: '/docs/Relatório de Atividades 2025.pdf' },
     ],
   },
   {

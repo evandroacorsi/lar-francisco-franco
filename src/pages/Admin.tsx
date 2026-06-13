@@ -29,7 +29,9 @@ export default function Admin() {
       setLoading(false);
     });
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((event, session) => {
       if (!session) navigate("/auth");
       else setUser(session.user);
     });
@@ -53,7 +55,6 @@ export default function Admin() {
     setEditingNews(null);
   };
 
-
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
@@ -69,12 +70,20 @@ export default function Admin() {
           <div className="flex items-center gap-4">
             <img src={logo} alt="Lar Francisco Franco" className="h-16" />
             <div>
-              <h1 className="text-xl font-bold text-muted">Painel Administrativo</h1>
-              <p className="text-sm text-muted">Lar Francisco Franco - Casa das Meninas</p>
+              <h1 className="text-xl font-bold text-muted">
+                Painel Administrativo
+              </h1>
+              <p className="text-sm text-muted">
+                Lar Francisco Franco - Casa das Meninas
+              </p>
             </div>
           </div>
 
-          <Button variant="outline" className="bg-white/10 backdrop-blur-sm border-white text-white hover:bg-white hover:text-primary" onClick={handleLogout}>
+          <Button
+            variant="outline"
+            className="bg-white/10 backdrop-blur-sm border-white text-white hover:bg-white hover:text-primary"
+            onClick={handleLogout}
+          >
             <LogOut className="mr-2 h-4 w-4" />
             Sair
           </Button>
@@ -82,10 +91,8 @@ export default function Admin() {
       </header>
 
       <main className="container mx-auto px-4 py-8">
-
         {/* Componente de Abas para separar os conteúdos */}
         <Tabs defaultValue="news" className="w-full">
-
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-6 gap-4">
             <TabsList className="bg-white">
               <TabsTrigger value="news" className="gap-2">
@@ -98,18 +105,23 @@ export default function Admin() {
           <TabsContent value="news">
             <div className="flex items-center justify-between mb-6">
               <div>
-                <h2 className="text-3xl font-bold text-foreground">Gerenciar Notícias</h2>
-                <p className="text-muted-foreground mt-1">Crie, edite e gerencie as notícias do site</p>
+                <h2 className="text-3xl font-bold text-foreground">
+                  Gerenciar Notícias
+                </h2>
+                <p className="text-muted-foreground mt-1">
+                  Crie, edite e gerencie as notícias do site
+                </p>
               </div>
-              <Button onClick={() => setIsNewsDialogOpen(true)} className="gap-2">
+              <Button
+                onClick={() => setIsNewsDialogOpen(true)}
+                className="gap-2"
+              >
                 <Plus className="h-4 w-4" /> Nova Notícia
               </Button>
             </div>
 
             <NewsList onEdit={handleEditNews} key={`news-${refreshKey}`} />
           </TabsContent>
-
-
         </Tabs>
       </main>
 
@@ -118,9 +130,8 @@ export default function Admin() {
         open={isNewsDialogOpen}
         onOpenChange={handleCloseNewsDialog}
         editingNews={editingNews}
-        onSuccess={() => setRefreshKey(prev => prev + 1)}
+        onSuccess={() => setRefreshKey((prev) => prev + 1)}
       />
-
     </div>
   );
 }

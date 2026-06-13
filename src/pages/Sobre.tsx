@@ -22,8 +22,7 @@ import luiz from "@/assets/time/luiz.jpeg";
 import michele from "@/assets/time/michele.jpeg";
 import soraya from "@/assets/time/soraya.jpeg";
 import sandra from "@/assets/time/sandra.jpg";
-import tamara from "@/assets/time/tamara.jpeg";
-import taina from "@/assets/time/taina.jpeg";
+
 import vanderleia from "@/assets/time/vanderleia.jpeg";
 import user from "@/assets/time/user.jpg";
 
@@ -35,7 +34,6 @@ const Sobre = () => {
     { name: "Sandra Barreto da Mota Gomes", role: "Coordenadora Geral", image: sandra },
     { name: "Soraya El Gharib Jorge Estevam", role: "Coordenadora Pedagógica", image: soraya },
     { name: "Michele Cristina Lima", role: "Secretária", image: michele },
-    { name: "Maicon Sardinha", role: "Contador - Prisma Contabilidade", image: user },
 
     // Equipe Técnica
     { name: "Bruna de Lira Silva", role: "Assistente Social", image: bruna },
@@ -45,7 +43,7 @@ const Sobre = () => {
     { name: "Vitória Dos Santos Alves Camargo De Lima", role: "Educadora Social", image: user },
     { name: "Luiz Felipe Santos Silva", role: "Educador Social", image: luiz },
     { name: "João Pedro de Oliveira Zafalon", role: "Educador Social", image: joao },
-    { name: "Tamara Pascoal Barreto", role: "Educadora Social", image: tamara },
+    { name: "Bruna", role: "Educadora Social", image: user },
     { name: "Amanda Carolina Cavalcante Leite", role: "Educadora Social", image: amanda },
     { name: "Alexandre Félix", role: "Professor de Capoeira", image: user },
 

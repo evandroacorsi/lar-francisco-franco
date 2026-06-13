@@ -24,6 +24,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+import { supabase } from "@/integrations/supabase/client";
+
 interface NewsListProps {
   onEdit: (news: any) => void;
 }
@@ -37,16 +39,24 @@ export function NewsList({ onEdit }: NewsListProps) {
   const [searchTerm, setSearchTerm] = useState("");
   const [categoriaFiltro, setCategoriaFiltro] = useState("");
 
+  const [nextCursor, setNextCursor] = useState<string | null>(null);
+  const [loadingMore, setLoadingMore] = useState(false);
+
+
   const { toast } = useToast();
 
-  const fetchNews = async () => {
-    setLoading(true);
+  const fetchNews = async (cursor: string | null = null, reset = false) => {
     try {
+      if (cursor) setLoadingMore(true);
+      else setLoading(true);
+
       const url = new URL("/api/noticias.php", window.location.origin);
-      url.searchParams.append("limit", "12");
 
+      // 👉 aqui você define quantas por página no ADMIN
+      url.searchParams.append("limit", "6");
+
+      if (cursor) url.searchParams.append("cursor", cursor);
       if (searchTerm) url.searchParams.append("search", searchTerm);
-
       if (categoriaFiltro && categoriaFiltro !== "all") {
         url.searchParams.append("categoria", categoriaFiltro);
       }
@@ -56,7 +66,19 @@ export function NewsList({ onEdit }: NewsListProps) {
       if (!response.ok) throw new Error(`Erro HTTP: ${response.status}`);
 
       const data = await response.json();
-      setNews(data.noticias || []);
+
+      const recebidas = data.noticias || [];
+
+      if (reset) {
+        setNews(recebidas);
+      } else if (cursor) {
+        setNews(prev => [...prev, ...recebidas]);
+      } else {
+        setNews(recebidas);
+      }
+
+      setNextCursor(data.next_cursor || null);
+
     } catch (error: any) {
       console.error("Erro no fetch:", error);
       toast({
@@ -66,31 +88,50 @@ export function NewsList({ onEdit }: NewsListProps) {
       });
     } finally {
       setLoading(false);
+      setLoadingMore(false);
     }
   };
 
-  // Dispara a busca sempre que os filtros mudarem
+  // Debounce igual você já tinha
   useEffect(() => {
     const delayDebounce = setTimeout(() => {
-      fetchNews();
-    }, 500); // 500ms de debounce para não sobrecarregar o PHP enquanto digita
+      fetchNews(null, true); // 👉 reset quando muda filtro
+    }, 500);
+
 
     return () => clearTimeout(delayDebounce);
   }, [searchTerm, categoriaFiltro]);
 
   const handleDelete = async () => {
     if (!deleteId) return;
+
     try {
-      const response = await fetch(`/api/noticias.php?id=${deleteId}`, {
+      let {
+        data: { session },
+      } = await supabase.auth.getSession();
+
+      if (!session) throw new Error("Sessão inválida");
+
+      let response = await fetch(`/api/noticias.php?id=${deleteId}`, {
         method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${session.access_token}`,
+          "X-Admin-Secret": import.meta.env.VITE_ADMIN_API_SECRET,
+        },
       });
+
       const result = await response.json();
-      if (!response.ok || result.error) throw new Error(result.error || "Erro ao deletar");
+      if (!response.ok || result.error)
+        throw new Error(result.error || "Erro ao deletar");
 
       toast({ title: "Notícia deletada" });
       setNews((prev) => prev.filter((item) => item.id !== deleteId));
     } catch (error: any) {
-      toast({ title: "Erro ao deletar", description: error.message, variant: "destructive" });
+      toast({
+        title: "Erro ao deletar",
+        description: error.message,
+        variant: "destructive",
+      });
     } finally {
       setDeleteId(null);
     }
@@ -124,7 +165,7 @@ export function NewsList({ onEdit }: NewsListProps) {
           <SelectContent className="max-h-[300px]"> {/* Aqui definimos a altura máxima do scroll */}
             <SelectItem value="all">Todas categorias</SelectItem>
             {[
-              "Atividades", "Avisos", "Campanhas", "Cultura", "Cuidados e Saúde",
+              "Assistência Social", "Atividades", "Avisos", "Campanhas", "Cultura", "Cuidados e Saúde",
               "Depoimentos", "Doações", "Esportes", "Eventos", "Informativo",
               "Lazer", "Meio Ambiente", "Oficinas", "Parcerias", "Prestação de Contas",
               "Projetos", "Transparência"
@@ -183,6 +224,19 @@ export function NewsList({ onEdit }: NewsListProps) {
               </CardContent>
             </Card>
           ))}
+
+        </div>
+      )}
+      {nextCursor && (
+        <div className="text-center mt-8">
+          <Button
+            onClick={() => fetchNews(nextCursor)}
+            variant="outline"
+            className="min-w-[200px]"
+            disabled={loadingMore}
+          >
+            {loadingMore ? "Carregando..." : "Carregar mais"}
+          </Button>
         </div>
       )}
 

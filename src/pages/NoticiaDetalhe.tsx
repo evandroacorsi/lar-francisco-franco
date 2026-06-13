@@ -73,6 +73,7 @@ const NoticiaDetalhes = () => {
         .filter(Boolean)          // remove null, undefined e ""
         .join("");            // separa por parágrafo
 
+    const [imagemAberta, setImagemAberta] = useState<string | null>(null);
 
     // Lógica do carrossel automático
     useEffect(() => {
@@ -136,7 +137,12 @@ const NoticiaDetalhes = () => {
                 <section className="relative mb-8 w-full h-64 sm:h-80 md:h-96 lg:h-[450px] rounded-xl overflow-hidden shadow-md group">
                     {noticia.imagens.map((img: string, idx: number) => (
                         <div key={idx} className={`absolute inset-0 transition-opacity duration-700 ease-in-out ${idx === currentSlide ? "opacity-100 z-10" : "opacity-0 z-0"}`}>
-                            <img src={img} alt={`${noticia.titulo} - imagem ${idx + 1}`} className="w-full h-full object-cover" />
+                            <img
+                                src={img}
+                                alt={`${noticia.titulo} - imagem ${idx + 1}`}
+                                className="w-full h-full object-cover cursor-zoom-in"
+                                onClick={() => setImagemAberta(img)}
+                            />
                             <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none" />
                         </div>
                     ))}
@@ -215,6 +221,28 @@ const NoticiaDetalhes = () => {
                     </Link>
                 </div>
             </div>
+            {imagemAberta && (
+                <div
+                    className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4"
+                    onClick={() => setImagemAberta(null)}
+                >
+                    {/* Botão fechar */}
+                    <button
+                        onClick={() => setImagemAberta(null)}
+                        className="absolute top-4 right-4 text-white text-3xl font-bold hover:opacity-80"
+                    >
+                        ✕
+                    </button>
+
+                    {/* Imagem */}
+                    <img
+                        src={imagemAberta}
+                        alt="Imagem ampliada"
+                        className="max-w-full max-h-full object-contain rounded-lg shadow-2xl"
+                        onClick={(e) => e.stopPropagation()} // evita fechar ao clicar na imagem
+                    />
+                </div>
+            )}
         </div>
     );
 };

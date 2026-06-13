@@ -22,6 +22,7 @@ import {
 } from "@/components/ui/popover";
 import { Check, ChevronsUpDown } from "lucide-react";
 import { cn } from "@/lib/utils"; // ou onde estiver sua função cn
+import { supabase } from "@/integrations/supabase/client";
 
 interface NewsDialogProps {
   open: boolean;
@@ -52,6 +53,7 @@ export function NewsDialog({ open, onOpenChange, editingNews, onSuccess }: NewsD
   const CONTEUDO_BLOCO = 2000;
 
   const CATEGORIAS_PREDEFINIDAS = [
+    "Assistência Social",
     "Eventos",
     "Campanhas",
     "Atividades",
@@ -173,9 +175,19 @@ export function NewsDialog({ open, onOpenChange, editingNews, onSuccess }: NewsD
     const data = new FormData();
     data.append("imagem", file); // "imagem" deve bater com $_FILES['imagem'] no PHP
 
+    let {
+      data: { session },
+    } = await supabase.auth.getSession();
+
+    if (!session) throw new Error("Sessão inválida");
+
     try {
       const res = await fetch("/api/upload.php", {
         method: "POST",
+        headers: {
+          Authorization: `Bearer ${session.access_token}`,
+          "X-Admin-Secret": import.meta.env.VITE_ADMIN_API_SECRET,
+        },
         body: data, // Não usa headers JSON aqui, o navegador define multipart/form-data automático
       });
 
@@ -210,11 +222,21 @@ export function NewsDialog({ open, onOpenChange, editingNews, onSuccess }: NewsD
       imagem: prev.imagem.filter((i) => i !== img),
     }));
 
+    let {
+      data: { session },
+    } = await supabase.auth.getSession();
+
+    if (!session) throw new Error("Sessão inválida");
+
     // 2. Se for uma imagem local (nossa API), deleta do servidor imediatamente
     if (img.includes("/api/uploads/")) {
       try {
         await fetch("/api/delete-file.php", {
           method: "POST",
+          headers: {
+            Authorization: `Bearer ${session.access_token}`,
+            "X-Admin-Secret": import.meta.env.VITE_ADMIN_API_SECRET,
+          },
           body: JSON.stringify({ url: img })
         });
         toast({ title: "Arquivo removido do servidor" });
@@ -248,9 +270,21 @@ export function NewsDialog({ open, onOpenChange, editingNews, onSuccess }: NewsD
         ? "/api/news-update.php"
         : "/api/news-create.php";
 
+      let {
+        data: { session },
+      } = await supabase.auth.getSession();
+
+      if (!session) throw new Error("Sessão inválida");
+
+
       const res = await fetch(endpoint, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${session.access_token}`,
+          "X-Admin-Secret": import.meta.env.VITE_ADMIN_API_SECRET,
+        },
+
         body: JSON.stringify({
           ...formData,
           conteudo,
