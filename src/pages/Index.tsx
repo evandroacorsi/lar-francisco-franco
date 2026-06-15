@@ -23,6 +23,7 @@ import {
 } from "lucide-react";
 
 import Parceiros from "@/components/Parceiros";
+import { fetchPublicNews, type NewsSummary } from "@/lib/news";
 
 import { Link } from "react-router-dom";
 import i1 from "@/assets/1.png";
@@ -35,19 +36,14 @@ import { useEffect, useState } from 'react'
 
 const Index = () => {
 
-  const [recentNews, setRecentNews] = useState([]);
+  const [recentNews, setRecentNews] = useState<NewsSummary[]>([]);
   const [loadingNews, setLoadingNews] = useState(true);
 
   useEffect(() => {
     const fetchRecentNews = async () => {
       try {
-        // Chamamos a API pedindo apenas 3 notícias
-        const response = await fetch("https://larfranciscofranco.com.br/noticias.php?limit=3");
-        const data = await response.json();
-
-        // Garante que é um array
-        const noticiasArray = data.noticias || (Array.isArray(data) ? data : []);
-        setRecentNews(noticiasArray);
+        const noticiasArray = await fetchPublicNews();
+        setRecentNews(noticiasArray.slice(0, 3));
       } catch (error) {
         console.error("Erro ao carregar notícias recentes:", error);
       } finally {
@@ -59,9 +55,10 @@ const Index = () => {
   }, []);
 
   // Função auxiliar para formatar data (YYYY-MM-DD -> DD de Mes, YYYY)
-  const formatDate = (dateString) => {
+  const formatDate = (dateString: string) => {
     if (!dateString) return "";
-    const date = new Date(dateString);
+    const [year, month, day] = dateString.split("-");
+    const date = new Date(Number(year), Number(month) - 1, Number(day));
     return new Intl.DateTimeFormat('pt-BR', { day: 'numeric', month: 'long', year: 'numeric' }).format(date);
   };
   return (
@@ -368,7 +365,7 @@ const Index = () => {
             <div className="grid md:grid-cols-3 gap-8">
               {recentNews.map((item, index) => (
                 <Link
-                  to={`/noticia/${item.id}`}
+                  to={`/noticias/${item.slug}`}
                   key={item.id}
                   className="block group"
                   style={{
@@ -385,9 +382,9 @@ const Index = () => {
                         </span>
                       </div>
 
-                      {item.imagem ? (
+                      {item.imagem[0] ? (
                         <img
-                          src={item.imagem}
+                          src={item.imagem[0]}
                           alt={item.titulo}
                           className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                         />

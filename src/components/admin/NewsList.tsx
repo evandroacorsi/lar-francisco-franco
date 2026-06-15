@@ -1,10 +1,3 @@
-import { useEffect, useState } from "react";
-import { useToast } from "@/hooks/use-toast";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input"; // Importe o Input
-import { Edit, Trash2, Eye, Search, X } from "lucide-react"; // Ícones novos
 import {
   AlertDialog,
   AlertDialogAction,
@@ -15,7 +8,16 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+} from "@/components/ui/pagination";
 import {
   Select,
   SelectContent,
@@ -23,113 +25,122 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-
+import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { fetchJson } from "@/lib/api";
+import { filterNews, getNewsCategories, type NewsPost, type NewsSummary } from "@/lib/news";
+import { ChevronLeft, ChevronRight, Edit, Eye, Search, Trash2, X } from "lucide-react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 interface NewsListProps {
-  onEdit: (news: any) => void;
+  onEdit: (news: NewsPost) => void;
 }
 
+const PAGE_SIZE = 9;
+
+const getSessionToken = async () => {
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+
+  if (!session) throw new Error("Sessão inválida");
+  return session.access_token;
+};
+
+const getErrorMessage = (error: unknown) =>
+  error instanceof Error ? error.message : "Ocorreu um erro inesperado.";
+
+const getPageWindow = (currentPage: number, totalPages: number) => {
+  const windowSize = 5;
+  const halfWindow = Math.floor(windowSize / 2);
+  const start = Math.max(1, Math.min(currentPage - halfWindow, totalPages - windowSize + 1));
+  const end = Math.min(totalPages, start + windowSize - 1);
+
+  return Array.from({ length: end - start + 1 }, (_, index) => start + index);
+};
+
 export function NewsList({ onEdit }: NewsListProps) {
-  const [news, setNews] = useState<any[]>([]);
+  const [news, setNews] = useState<NewsSummary[]>([]);
   const [loading, setLoading] = useState(true);
   const [deleteId, setDeleteId] = useState<string | null>(null);
-
-  // Estados para Filtros
   const [searchTerm, setSearchTerm] = useState("");
   const [categoriaFiltro, setCategoriaFiltro] = useState("");
-
-  const [nextCursor, setNextCursor] = useState<string | null>(null);
-  const [loadingMore, setLoadingMore] = useState(false);
-
-
+  const [currentPage, setCurrentPage] = useState(1);
   const { toast } = useToast();
 
-  const fetchNews = async (cursor: string | null = null, reset = false) => {
+  const fetchNews = useCallback(async () => {
     try {
-      if (cursor) setLoadingMore(true);
-      else setLoading(true);
-
-      const url = new URL("/api/noticias.php", window.location.origin);
-
-      // 👉 aqui você define quantas por página no ADMIN
-      url.searchParams.append("limit", "6");
-
-      if (cursor) url.searchParams.append("cursor", cursor);
-      if (searchTerm) url.searchParams.append("search", searchTerm);
-      if (categoriaFiltro && categoriaFiltro !== "all") {
-        url.searchParams.append("categoria", categoriaFiltro);
-      }
-
-      const response = await fetch(url.toString());
-
-      if (!response.ok) throw new Error(`Erro HTTP: ${response.status}`);
-
-      const data = await response.json();
-
-      const recebidas = data.noticias || [];
-
-      if (reset) {
-        setNews(recebidas);
-      } else if (cursor) {
-        setNews(prev => [...prev, ...recebidas]);
-      } else {
-        setNews(recebidas);
-      }
-
-      setNextCursor(data.next_cursor || null);
-
-    } catch (error: any) {
-      console.error("Erro no fetch:", error);
+      setLoading(true);
+      const data = await fetchJson<{ noticias: NewsSummary[] }>("/api/news.php");
+      setNews(Array.isArray(data.noticias) ? data.noticias : []);
+    } catch (error: unknown) {
       toast({
         title: "Erro ao carregar notícias",
-        description: error.message,
+        description: getErrorMessage(error),
         variant: "destructive",
       });
     } finally {
       setLoading(false);
-      setLoadingMore(false);
     }
+  }, [toast]);
+
+  useEffect(() => {
+    fetchNews();
+  }, [fetchNews]);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm, categoriaFiltro]);
+
+  const filteredNews = useMemo(
+    () => filterNews(news, searchTerm, categoriaFiltro),
+    [news, searchTerm, categoriaFiltro],
+  );
+  const categorias = useMemo(() => getNewsCategories(news), [news]);
+  const totalPages = Math.max(1, Math.ceil(filteredNews.length / PAGE_SIZE));
+  const visibleNews = filteredNews.slice(
+    (currentPage - 1) * PAGE_SIZE,
+    currentPage * PAGE_SIZE,
+  );
+  const pageWindow = getPageWindow(currentPage, totalPages);
+
+  const changePage = (page: number) => {
+    setCurrentPage(Math.min(Math.max(page, 1), totalPages));
   };
 
-  // Debounce igual você já tinha
-  useEffect(() => {
-    const delayDebounce = setTimeout(() => {
-      fetchNews(null, true); // 👉 reset quando muda filtro
-    }, 500);
-
-
-    return () => clearTimeout(delayDebounce);
-  }, [searchTerm, categoriaFiltro]);
+  const handleEdit = async (id: string) => {
+    try {
+      const data = await fetchJson<NewsPost>(`/api/news.php?id=${encodeURIComponent(id)}`);
+      onEdit(data);
+    } catch (error: unknown) {
+      toast({
+        title: "Erro ao editar",
+        description: getErrorMessage(error),
+        variant: "destructive",
+      });
+    }
+  };
 
   const handleDelete = async () => {
     if (!deleteId) return;
 
     try {
-      let {
-        data: { session },
-      } = await supabase.auth.getSession();
-
-      if (!session) throw new Error("Sessão inválida");
-
-      let response = await fetch(`/api/noticias.php?id=${deleteId}`, {
+      const token = await getSessionToken();
+      const result = await fetchJson<{ success?: boolean; error?: string }>(`/api/news.php?id=${encodeURIComponent(deleteId)}`, {
         method: "DELETE",
         headers: {
-          Authorization: `Bearer ${session.access_token}`,
-          "X-Admin-Secret": import.meta.env.VITE_ADMIN_API_SECRET,
+          Authorization: `Bearer ${token}`,
         },
       });
 
-      const result = await response.json();
-      if (!response.ok || result.error)
-        throw new Error(result.error || "Erro ao deletar");
+      if (result.error) throw new Error(result.error || "Erro ao deletar");
 
       toast({ title: "Notícia deletada" });
       setNews((prev) => prev.filter((item) => item.id !== deleteId));
-    } catch (error: any) {
+    } catch (error: unknown) {
       toast({
         title: "Erro ao deletar",
-        description: error.message,
+        description: getErrorMessage(error),
         variant: "destructive",
       });
     } finally {
@@ -139,14 +150,13 @@ export function NewsList({ onEdit }: NewsListProps) {
 
   return (
     <>
-      {/* Barra de Filtros no Admin */}
       <div className="flex flex-col md:flex-row gap-4 mb-8 bg-muted/30 p-4 rounded-lg border">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
             placeholder="Buscar pelo título..."
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={(event) => setSearchTerm(event.target.value)}
             className="pl-10 bg-white"
           />
           {searchTerm && (
@@ -157,19 +167,16 @@ export function NewsList({ onEdit }: NewsListProps) {
           )}
         </div>
 
-        {/* Select Aprimorado com Scroll */}
-        <Select value={categoriaFiltro} onValueChange={setCategoriaFiltro}>
+        <Select
+          value={categoriaFiltro || "all"}
+          onValueChange={(value) => setCategoriaFiltro(value === "all" ? "" : value)}
+        >
           <SelectTrigger className="w-full md:w-[220px] bg-white">
             <SelectValue placeholder="Todas categorias" />
           </SelectTrigger>
-          <SelectContent className="max-h-[300px]"> {/* Aqui definimos a altura máxima do scroll */}
+          <SelectContent className="max-h-[300px]">
             <SelectItem value="all">Todas categorias</SelectItem>
-            {[
-              "Assistência Social", "Atividades", "Avisos", "Campanhas", "Cultura", "Cuidados e Saúde",
-              "Depoimentos", "Doações", "Esportes", "Eventos", "Informativo",
-              "Lazer", "Meio Ambiente", "Oficinas", "Parcerias", "Prestação de Contas",
-              "Projetos", "Transparência"
-            ].sort().map((cat) => (
+            {categorias.map((cat) => (
               <SelectItem key={cat} value={cat}>
                 {cat}
               </SelectItem>
@@ -180,7 +187,7 @@ export function NewsList({ onEdit }: NewsListProps) {
 
       {loading ? (
         <div className="p-8 text-center animate-pulse">Carregando notícias...</div>
-      ) : news.length === 0 ? (
+      ) : filteredNews.length === 0 ? (
         <Card className="p-12 text-center border-dashed">
           <p className="text-muted-foreground">Nenhuma notícia encontrada para estes filtros.</p>
           {(searchTerm || categoriaFiltro) && (
@@ -190,63 +197,117 @@ export function NewsList({ onEdit }: NewsListProps) {
           )}
         </Card>
       ) : (
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {news.map((item) => (
-            <Card key={item.id} className="overflow-hidden flex flex-col group">
-              <div className="h-40 overflow-hidden bg-muted relative">
-                {item.imagem ? (
-                  <img src={item.imagem} alt={item.titulo} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center text-muted-foreground text-xs">Sem imagem</div>
-                )}
-                <div className="absolute top-2 right-2 flex gap-1">
-                  <Button size="icon" variant="secondary" className="h-8 w-8 shadow-md" onClick={() => onEdit(item)}>
-                    <Edit className="h-4 w-4" />
-                  </Button>
-                  <Button size="icon" variant="destructive" className="h-8 w-8 shadow-md" onClick={() => setDeleteId(item.id)}>
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
-                </div>
-              </div>
+        <>
+          <div className="mb-4 text-sm text-muted-foreground">
+            Exibindo {visibleNews.length} de {filteredNews.length} notícia(s)
+          </div>
 
-              <CardHeader className="p-4 flex-1">
-                <h3 className="font-bold text-md line-clamp-2 leading-tight">{item.titulo}</h3>
-              </CardHeader>
-
-              <CardContent className="p-4 pt-0 space-y-3">
-                <p className="text-xs text-muted-foreground line-clamp-2">{item.descricao}</p>
-                <div className="flex items-center justify-between text-[10px] font-medium text-muted-foreground border-t pt-3">
-                  <span>{item.data ? new Date(item.data).toLocaleDateString("pt-BR") : "-"}</span>
-                  <div className="flex items-center gap-1">
-                    <Eye className="h-3 w-3" /> {item.visualizacoes}
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {visibleNews.map((item) => (
+              <Card key={item.id} className="overflow-hidden flex flex-col group">
+                <div className="h-40 overflow-hidden bg-muted relative">
+                  {item.imagem[0] ? (
+                    <img
+                      src={item.imagem[0]}
+                      alt={item.titulo}
+                      loading="lazy"
+                      decoding="async"
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center text-muted-foreground text-xs">Sem imagem</div>
+                  )}
+                  <div className="absolute top-2 right-2 flex gap-1">
+                    <Button size="icon" variant="secondary" className="h-8 w-8 shadow-md" onClick={() => handleEdit(item.id)}>
+                      <Edit className="h-4 w-4" />
+                    </Button>
+                    <Button size="icon" variant="destructive" className="h-8 w-8 shadow-md" onClick={() => setDeleteId(item.id)}>
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
                   </div>
                 </div>
-              </CardContent>
-            </Card>
-          ))}
 
-        </div>
-      )}
-      {nextCursor && (
-        <div className="text-center mt-8">
-          <Button
-            onClick={() => fetchNews(nextCursor)}
-            variant="outline"
-            className="min-w-[200px]"
-            disabled={loadingMore}
-          >
-            {loadingMore ? "Carregando..." : "Carregar mais"}
-          </Button>
-        </div>
+                <CardHeader className="p-4 flex-1">
+                  <div className="flex flex-wrap gap-1 mb-2">
+                    {item.categoria.map((cat) => (
+                      <Badge key={cat} variant="secondary">{cat}</Badge>
+                    ))}
+                  </div>
+                  <h3 className="font-bold text-md line-clamp-2 leading-tight">{item.titulo}</h3>
+                </CardHeader>
+
+                <CardContent className="p-4 pt-0 space-y-3">
+                  <p className="text-xs text-muted-foreground line-clamp-2">{item.descricao}</p>
+                  <div className="flex items-center justify-between text-[10px] font-medium text-muted-foreground border-t pt-3">
+                    <span>{item.data ? new Date(`${item.data}T00:00:00`).toLocaleDateString("pt-BR") : "-"}</span>
+                    <div className="flex items-center gap-1">
+                      <Eye className="h-3 w-3" /> {item.visualizacoes}
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+
+          {totalPages > 1 && (
+            <Pagination className="mt-8">
+              <PaginationContent>
+                <PaginationItem>
+                  <PaginationLink
+                    href="#"
+                    size="default"
+                    onClick={(event) => {
+                      event.preventDefault();
+                      changePage(currentPage - 1);
+                    }}
+                    className={currentPage === 1 ? "pointer-events-none opacity-50" : ""}
+                  >
+                    <ChevronLeft className="h-4 w-4" />
+                    Anterior
+                  </PaginationLink>
+                </PaginationItem>
+
+                {pageWindow.map((page) => (
+                  <PaginationItem key={page}>
+                    <PaginationLink
+                      href="#"
+                      isActive={page === currentPage}
+                      onClick={(event) => {
+                        event.preventDefault();
+                        changePage(page);
+                      }}
+                    >
+                      {page}
+                    </PaginationLink>
+                  </PaginationItem>
+                ))}
+
+                <PaginationItem>
+                  <PaginationLink
+                    href="#"
+                    size="default"
+                    onClick={(event) => {
+                      event.preventDefault();
+                      changePage(currentPage + 1);
+                    }}
+                    className={currentPage === totalPages ? "pointer-events-none opacity-50" : ""}
+                  >
+                    Próxima
+                    <ChevronRight className="h-4 w-4" />
+                  </PaginationLink>
+                </PaginationItem>
+              </PaginationContent>
+            </Pagination>
+          )}
+        </>
       )}
 
-      {/* Modal de confirmação restaurado */}
       <AlertDialog open={!!deleteId} onOpenChange={() => setDeleteId(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Confirmar exclusão</AlertDialogTitle>
             <AlertDialogDescription>
-              Tem certeza que deseja deletar esta notícia? Ela será movida para a lixeira do Notion.
+              Tem certeza que deseja deletar esta notícia? O arquivo Markdown será removido da pasta news no servidor.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

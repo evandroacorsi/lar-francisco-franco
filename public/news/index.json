@@ -1,0 +1,57 @@
+[
+    {
+        "id": "35ef3d1d-9602-813a-b40e-e30e0dd893a4",
+        "slug": "o-dia-de-quem-cuida-de-mim",
+        "data": "2026-05-12",
+        "titulo": "O DIA DE QUEM CUIDA DE MIM",
+        "descricao": "No Lar Francisco Franco, celebramos o “Dia de Quem Cuida de Mim”, uma data especial dedicada a todas as pessoas que representam amor, cuidado e proteção na vida de nossas crianças. Sabemos que cada criança possui uma história e uma configuração familiar única, e por isso homenageamos mães, avós, tias, pais, responsáveis e todos aqueles que exercem esse papel tão importante com carinho e dedicação. 💙",
+        "categoria": [
+            "Assistência Social",
+            "Lazer"
+        ],
+        "imagem": [
+            "/uploads/img_6a03765913ea7.jpeg",
+            "/uploads/img_6a037666528e9.jpeg",
+            "/uploads/img_6a037671a8b3f.jpg",
+            "/uploads/img_6a0376c583699.jpg",
+            "/uploads/img_6a0376d2e30cc.jpg",
+            "/uploads/img_6a03771a5b5ff.jpg"
+        ],
+        "imagens": [
+            "/uploads/img_6a03765913ea7.jpeg",
+            "/uploads/img_6a037666528e9.jpeg",
+            "/uploads/img_6a037671a8b3f.jpg",
+            "/uploads/img_6a0376c583699.jpg",
+            "/uploads/img_6a0376d2e30cc.jpg",
+            "/uploads/img_6a03771a5b5ff.jpg"
+        ],
+        "visualizacoes": 3,
+        "path": "/news/o-dia-de-quem-cuida-de-mim.md"
+    },
+    {
+        "id": "330f3d1d-9602-818c-9b6e-f6625becb276",
+        "slug": "4a-feijoada-pagoneja-do-lar-francisco-franco",
+        "data": "2026-03-07",
+        "titulo": "4ª FEIJOADA PAGONEJA DO LAR FRANCISCO FRANCO",
+        "descricao": "A 4ª edição da Feijoada Pagoneja do Lar Francisco Franco é um evento solidário que une gastronomia e música em um ambiente acolhedor e festivo. Com deliciosa feijoada, muito pagode e sertanejo, a ação tem como objetivo angariar  recursos financeiros para a manutenção das atividades socioassistenciais da entidade, promovendo integração comunitária e fortalecendo a causa em prol das crianças e adolescentes atendidos no projeto.",
+        "categoria": [
+            "Cultura"
+        ],
+        "imagem": [
+            "/uploads/img_69c69d4f93252.jpeg",
+            "/uploads/img_69c69d5c2e2b1.jpeg",
+            "/uploads/img_69c69d669cabb.jpeg",
+            "/uploads/img_69c69d715a5f4.jpeg",
+            "/uploads/img_69c69eed41bc9.jpeg"
+        ],
+        "imagens": [
+            "/uploads/img_69c69d4f93252.jpeg",
+            "/uploads/img_69c69d5c2e2b1.jpeg",
+            "/uploads/img_69c69d669cabb.jpeg",
+            "/uploads/img_69c69d715a5f4.jpeg",
+            "/uploads/img_69c69eed41bc9.jpeg"
+        ],
+        "visualizacoes": 16,
+        "path": "/news/4a-feijoada-pagoneja-do-lar-francisco-franco.md"
+    }
+]

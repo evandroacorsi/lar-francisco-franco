@@ -1,0 +1,72 @@
+[
+  {
+    "id": "balanco-2025",
+    "title": "Balanço Anual 2025",
+    "section": "accountability",
+    "year": "2025",
+    "dateLabel": "Dez/2025",
+    "url": "/docs/Balanço 2025.pdf",
+    "fileName": "Balanço 2025.pdf",
+    "order": 1
+  },
+  {
+    "id": "relatorio-de-atividades-2025",
+    "title": "Relatório de Atividades 2025",
+    "section": "accountability",
+    "year": "2025",
+    "dateLabel": "Em breve",
+    "url": "/docs/Relatório de Atividades 2025.pdf",
+    "fileName": "Relatório de Atividades 2025.pdf",
+    "order": 2
+  },
+  {
+    "id": "balanco-2024",
+    "title": "Balanço Anual 2024",
+    "section": "accountability",
+    "year": "2024",
+    "dateLabel": "Dez/2024",
+    "url": "/docs/Balanço 2024.pdf",
+    "fileName": "Balanço 2024.pdf",
+    "order": 1
+  },
+  {
+    "id": "relatorio-de-atividades-2024",
+    "title": "Relatório de Atividades 2024",
+    "section": "accountability",
+    "year": "2024",
+    "dateLabel": "Dez/2024",
+    "url": "/docs/Relatório de Atividades 2024.pdf",
+    "fileName": "Relatório de Atividades 2024.pdf",
+    "order": 2
+  },
+  {
+    "id": "estatuto-social",
+    "title": "Estatuto Social",
+    "section": "institutional",
+    "year": "",
+    "dateLabel": "",
+    "url": "/docs/ESTATUTO ATUALIZADO 2022.pdf",
+    "fileName": "ESTATUTO ATUALIZADO 2022.pdf",
+    "order": 1
+  },
+  {
+    "id": "ata-de-eleicao-da-diretoria",
+    "title": "Ata de Eleição da Diretoria",
+    "section": "institutional",
+    "year": "",
+    "dateLabel": "",
+    "url": "/docs/ATA DE ELEIÇÃO E POSSE 2024 REGISTRADA.pdf",
+    "fileName": "ATA DE ELEIÇÃO E POSSE 2024 REGISTRADA.pdf",
+    "order": 2
+  },
+  {
+    "id": "cartao-cnpj",
+    "title": "Cartão CNPJ",
+    "section": "institutional",
+    "year": "",
+    "dateLabel": "",
+    "url": "/docs/Cartão CNPJ.pdf",
+    "fileName": "Cartão CNPJ.pdf",
+    "order": 3
+  }
+]

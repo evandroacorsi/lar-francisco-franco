@@ -6,6 +6,8 @@ import { MapPin, Phone, Mail, Clock, Send } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner"; // Verifique se está usando sonner ou o hook use-toast
 import { FaWhatsapp } from "react-icons/fa";
+import { Turnstile } from "@/components/security/Turnstile";
+import { isTurnstileConfigured } from "@/lib/security";
 
 const Contato = () => {
   const [formData, setFormData] = useState({
@@ -16,9 +18,11 @@ const Contato = () => {
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [turnstileToken, setTurnstileToken] = useState("");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    let { name, value } = e.target;
+    const { name } = e.target;
+    let { value } = e.target;
     if (name === "telefone") {
       value = maskPhone(value);
     }
@@ -45,15 +49,22 @@ const Contato = () => {
       toast.error("Por favor, preencha um telefone válido.");
       return;
     }
+    if (isTurnstileConfigured && !turnstileToken) {
+      toast.error("Confirme a validação anti-spam antes de enviar.");
+      return;
+    }
 
     setIsSubmitting(true);
 
     try {
       // 3. Chamada para o send-mail.php
-      const response = await fetch("https://larfranciscofranco.com.br/send-mail.php", {
+      const response = await fetch("/send-mail.php", {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: new URLSearchParams(formData as any),
+        body: new URLSearchParams({
+          ...formData,
+          turnstileToken,
+        }),
       });
 
       const result = await response.json();
@@ -62,10 +73,11 @@ const Contato = () => {
         localStorage.setItem("lastFormSubmitLar", now.toString());
         toast.success("Mensagem enviada com sucesso!");
         setFormData({ nome: "", email: "", telefone: "", mensagem: "" });
+        setTurnstileToken("");
       } else {
         toast.error(result.message || "Erro ao enviar. Tente novamente.");
       }
-    } catch (error) {
+    } catch {
       toast.error("Erro de conexão. Verifique sua internet.");
     } finally {
       setIsSubmitting(false);
@@ -143,7 +155,7 @@ const Contato = () => {
                       <div className="space-y-2">
                         <div className="flex justify-between">
                           <label className="text-sm font-medium text-gray-700">Mensagem *</label>
-                          <span className="text-xs text-muted-foreground">{formData.mensagem.length}/500</span>
+                          <span className="text-xs text-muted-foreground">{formData.mensagem.length}/3000</span>
                         </div>
                         <Textarea
                           name="mensagem"
@@ -152,9 +164,15 @@ const Contato = () => {
                           onChange={handleChange}
                           placeholder="Como podemos ajudar você hoje?"
                           rows={6}
+                          maxLength={3000}
                           className="resize-none"
                         />
                       </div>
+
+                      <Turnstile
+                        onVerify={setTurnstileToken}
+                        onExpire={() => setTurnstileToken("")}
+                      />
 
                       <Button
                         type="submit"

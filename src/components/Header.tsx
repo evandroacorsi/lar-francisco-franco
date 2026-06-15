@@ -17,7 +17,8 @@ export const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
 
-  const isActive = (path: string) => location.pathname === path;
+  const isActive = (path: string) =>
+    location.pathname === path || (path !== "/" && location.pathname.startsWith(`${path}/`));
 
   return (
     <header className="fixed top-0 w-full bg-background/95 backdrop-blur-sm shadow-soft z-50">

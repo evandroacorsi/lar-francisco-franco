@@ -1,31 +1,15 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { FileText, Download, Shield, Users, TrendingUp, Scale, BookOpen, Info, Calendar, Eye, Building2 } from "lucide-react";
-const prestacaoContas = [
-  {
-    ano: "2025",
-    items: [
-      { nome: "Balanço Anual 2025", data: "Dez/2025", link: "/docs/Balanço 2025.pdf" },
-      { nome: "Relatório de Atividades 2025", data: "Em breve", link: '/docs/Relatório de Atividades 2025.pdf' },
-    ],
-  },
-  {
-    ano: "2024",
-    items: [
-      { nome: "Balanço Anual 2024", data: "Dez/2024", link: "/docs/Balanço 2024.pdf" },
-      { nome: "Relatório de Atividades 2024", data: "Dez/2024", link: "/docs/Relatório de Atividades 2024.pdf" },
-    ],
-  }
-];
+import { useEffect, useMemo, useState } from "react";
+import {
+  fetchTransparencyDocuments,
+  getInstitutionalDocuments,
+  groupAccountabilityByYear,
+  type TransparencyDocument,
+} from "@/lib/transparencyDocuments";
 
-const documentosInstitucionais = [
-  { nome: "Estatuto Social", icon: FileText, link: "/docs/ESTATUTO ATUALIZADO 2022.pdf" },
-  { nome: "Ata de Eleição da Diretoria", icon: FileText, link: "/docs/ATA DE ELEIÇÃO E POSSE 2024 REGISTRADA.pdf" },
-  { nome: "Cartão CNPJ", icon: FileText, link: "/docs/Cartão CNPJ.pdf" },
-];
-
-
-const DocumentButton = ({ link }) => {
+const DocumentButton = ({ link }: { link: string }) => {
   if (link) {
     return (
       <Button size="sm" variant="outline" className="border-primary/20 hover:bg-primary/10" asChild>
@@ -50,6 +34,17 @@ const DocumentButton = ({ link }) => {
 ========================= */
 
 const Transparencia = () => {
+  const [documents, setDocuments] = useState<TransparencyDocument[]>([]);
+  const [loadingDocuments, setLoadingDocuments] = useState(true);
+  const prestacaoContas = useMemo(() => groupAccountabilityByYear(documents), [documents]);
+  const documentosInstitucionais = useMemo(() => getInstitutionalDocuments(documents), [documents]);
+
+  useEffect(() => {
+    fetchTransparencyDocuments()
+      .then(setDocuments)
+      .finally(() => setLoadingDocuments(false));
+  }, []);
+
   return (
     <div className="min-h-screen">
       <main className="pt-20">
@@ -176,10 +171,18 @@ const Transparencia = () => {
             </div>
 
             <div className="max-w-4xl mx-auto space-y-8">
-              {prestacaoContas.map((ano) => (
-                <Card key={ano.ano} className="shadow-card overflow-hidden">
+              {loadingDocuments ? (
+                <Card className="p-10 text-center text-muted-foreground">
+                  Carregando documentos...
+                </Card>
+              ) : prestacaoContas.length === 0 ? (
+                <Card className="p-10 text-center text-muted-foreground">
+                  Nenhuma prestação de contas cadastrada.
+                </Card>
+              ) : prestacaoContas.map((ano) => (
+                <Card key={ano.year} className="shadow-card overflow-hidden">
                   <div className="bg-primary/5 px-6 py-4 border-b border-primary/10">
-                    <h3 className="text-2xl font-bold text-primary">{ano.ano}</h3>
+                    <h3 className="text-2xl font-bold text-primary">{ano.year}</h3>
                   </div>
                   <CardContent className="p-6">
                     <div className="grid md:grid-cols-2 gap-4">
@@ -190,11 +193,11 @@ const Transparencia = () => {
                               <Calendar className="text-secondary" size={20} />
                             </div>
                             <div>
-                              <p className="text-sm font-bold text-gray-900">{doc.nome}</p>
-                              <p className="text-xs text-muted-foreground">{doc.data}</p>
+                              <p className="text-sm font-bold text-gray-900">{doc.title}</p>
+                              <p className="text-xs text-muted-foreground">{doc.dateLabel || doc.year}</p>
                             </div>
                           </div>
-                          <DocumentButton link={doc.link} />
+                          <DocumentButton link={doc.url} />
                         </div>
                       ))}
                     </div>
@@ -216,16 +219,24 @@ const Transparencia = () => {
             </div>
 
             <div className="max-w-4xl mx-auto grid md:grid-cols-3 gap-6 ">
-              {documentosInstitucionais.map((doc, idx) => (
+              {loadingDocuments ? (
+                <Card className="p-10 text-center text-muted-foreground md:col-span-3">
+                  Carregando documentos...
+                </Card>
+              ) : documentosInstitucionais.length === 0 ? (
+                <Card className="p-10 text-center text-muted-foreground md:col-span-3">
+                  Nenhum documento institucional cadastrado.
+                </Card>
+              ) : documentosInstitucionais.map((doc, idx) => (
                 <Card key={idx} className="shadow-card hover:shadow-hover transition-smooth bg-muted/50 border-none">
                   <CardContent className="p-6 flex flex-col items-center text-center gap-4 bg-white rounded-sm border-radius">
                     <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center shadow-sm">
-                      <doc.icon className="text-primary-foreground" size={32} />
+                      <FileText className="text-primary-foreground" size={32} />
                     </div>
                     <span className="font-bold text-primary min-h-[40px] flex items-center">
-                      {doc.nome}
+                      {doc.title}
                     </span>
-                    <DocumentButton link={doc.link} />
+                    <DocumentButton link={doc.url} />
                   </CardContent>
                 </Card>
               ))}
